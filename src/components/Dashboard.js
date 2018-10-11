@@ -162,13 +162,7 @@ class Dashboard extends Component {
     </div>
     {/* /.container-fluid */}
     {/* Sticky Footer */}
-    <footer className="sticky-footer">
-      <div className="container my-auto">
-        <div className="copyright text-center my-auto">
-          <span>Copyright © SmartFarm by Youllneverwalkalone 2018</span>
-        </div>
-      </div>
-    </footer>
+   
   </div>
             
         );
