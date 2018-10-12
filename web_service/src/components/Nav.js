@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import '../App.css';
 import '../Button.css';
+import {NavLink} from 'react-router-dom';
 class Nav extends Component {
     render() {
         return (
@@ -21,9 +22,12 @@ class Nav extends Component {
         <i className="fas fa-user-circle fa-fw" />
       </a>
       <div className="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-      
-        <a className="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
+      <NavLink to="/login">
+
+        <a className="dropdown-item" >Logout</a>
+        </NavLink>
       </div>
+     
     </li>
   </ul>
 </nav>

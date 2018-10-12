@@ -3,7 +3,7 @@ import '../Login.css';
 class Login extends Component {
     render() {
         return (
-            <div id="LoginForm">
+           
                 <div className="container">
   <h1 className="form-heading">SMART FARM</h1>
   <div className="login-form">
@@ -27,7 +27,7 @@ class Login extends Component {
     <p className="botto-text"> Designed by Youllneverwalkalone</p>
   </div></div>
 
-            </div>
+            
         );
     }
 }

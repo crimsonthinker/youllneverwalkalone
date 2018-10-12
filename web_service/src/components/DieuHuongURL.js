@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    Route
+    Route,BrowserRouter as Router
   } from 'react-router-dom';
 
 import Dashboard from './Dashboard.js';
@@ -18,7 +18,7 @@ class DieuHuongURL extends Component {
     
     </div>
     
-  
+    
         );
     }
 }
