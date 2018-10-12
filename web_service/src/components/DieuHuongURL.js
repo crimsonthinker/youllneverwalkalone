@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    Route,BrowserRouter as Router
+    Route
   } from 'react-router-dom';
 
 import Dashboard from './Dashboard.js';
@@ -12,7 +12,7 @@ class DieuHuongURL extends Component {
     <div>
      
         <Route exact path="/" component={Dashboard} ></Route>
-        <Route exact path="/history" component={Lichsu} ></Route>
+        <Route path="/history" component={Lichsu} ></Route>
 
     
     

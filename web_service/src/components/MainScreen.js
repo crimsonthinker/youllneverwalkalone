@@ -3,11 +3,10 @@ import Nav from './Nav';
 import Sidebar from './Sidebar';
 import DieuHuongURL from './DieuHuongURL';
 import Footer from './Footer';
-import {BrowserRouter as Router} from 'react-router-dom';
 class MainScreen extends Component {
     render() {
         return (
-            <Router>            
+        
                 <div id="page-top">
         <Nav/>
         <div id="wrapper">
@@ -18,7 +17,7 @@ class MainScreen extends Component {
         </div>
         <Footer/>
       </div>
-      </Router>
+    
 
         );
     }
