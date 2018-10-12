@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 public class DataProducer {
     static Runtime rt = Runtime.getRuntime();
     static Properties props = new Properties();
-    static Producer<String, String> producer = new KafkaProducer(props);
     public static void main(String[] args) throws Exception{
         //Calling Zookeeper server and Kafka server using processes
         Process zookeeperServer = rt.exec("kafka/bin/zookeeper-server-start.sh kafka/config/zookeeper.properties");
@@ -22,22 +21,20 @@ public class DataProducer {
         //Add properties
         props.put("bootstrap.servers", "localhost:9092"); //Port must be 9092    
         props.put("acks", "all");
-        props.put("retries", 0);
+        props.put("retries", 1);
         props.put("batch.size", 16384); 
         props.put("linger.ms", 1);  
         props.put("buffer.memory", 33554432);
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+
+        Producer<String, String> producer = new KafkaProducer(props);
             
         //Trả về số từ 0 tới 1000000
         //TODO: CHỉnh sửa sao cho giữa Java và C tương tác với nhau ờ hàm producer.send
     
         for(int i = 0;i < 10; i++){
-            try{
-                producer.send(new ProducerRecord<String, String>(topicName, Integer.toString(i), Integer.toString(i)));
-            } catch(KafkaException e){
-                System.out.println(e);
-            }
+            producer.send(new ProducerRecord<String, String>(topicName, Integer.toString(i), Integer.toString(i)));
             TimeUnit.SECONDS.sleep(1);
         }
 
