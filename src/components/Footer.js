@@ -20,18 +20,13 @@ class Footer extends Component {
             </div>
           </div>
         </div>
-        <div className="col-md-5">
-          <div className="d-inline-block">
-            <div className="bg-circle-outline d-inline-block" style={{backgroundColor: '#3b5998'}}>
-              <a href="https://www.facebook.com/"><i className="fa fa-3x fa-fw fa-facebook text-white" />
-              </a>
-            </div>
-            <div className="bg-circle-outline d-inline-block" style={{backgroundColor: '#d34836'}}>
-              <a href="https://www.google.com/">
-                <i className="fa fa-3x fa-fw fa-google text-white" /></a>
-            </div>
-          </div>
+        <div className="col-md-3">
+        <img className="float-right" src="http://pluspng.com/img-png/logo-liverpool-fc-png-liverpool-fc-logo-500.png" width="80" height="80"></img>
         </div>
+        <div className="col-md-2">
+        <img src="https://png2.kisspng.com/20180419/pue/kisspng-agriculture-smart-farm-systems-inc-irrigation-co-farm-logo-5ad83480e37b72.7947150815241186569318.png" width="130" height="80"></img>
+        </div>
+
       </div>
     </div>
   </div>
