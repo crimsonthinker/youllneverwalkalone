@@ -12,13 +12,13 @@ class DieuHuongURL extends Component {
     <div>
      
         <Route exact path="/" component={Dashboard} ></Route>
-        <Route exact path="/history" component={Lichsu} ></Route>
+        <Route path="/history" component={Lichsu} ></Route>
 
     
     
     </div>
     
-  
+    
         );
     }
 }
