@@ -7,7 +7,7 @@ var kafka = require('kafka-node'),
             {topic: "basic_topic"}
         ],
         {
-            autoCommit: true,
+            autoCommit: false,
             fromOffset: 'earliest'
         }
     );
@@ -17,7 +17,7 @@ consumer.on('message', function (message) {
 });
  
 consumer.on("error", function(err) {
-    console.log("error", err);
+    console.log("Waiting for Java server to start...");
 });
  
 process.on("SIGINT", function() {
