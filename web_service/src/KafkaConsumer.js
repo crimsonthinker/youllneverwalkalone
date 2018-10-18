@@ -11,8 +11,10 @@ var kafka = require('kafka-node'),
             fromOffset: 'earliest'
         }
     );
-
+module.exports = consumer;
+/*
 consumer.on('message', function (message) {
+    kafka_data = message;
     console.log(message);
 });
  
@@ -24,4 +26,4 @@ process.on("SIGINT", function() {
     consumer.close(true, function() {
         process.exit();
     });
-});
+});*/
