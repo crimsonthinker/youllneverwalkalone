@@ -29,9 +29,6 @@ public class DataProducer {
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 
         Producer<String, String> producer = new KafkaProducer(props);
-            
-        //Trả về số từ 0 tới 1000000
-        //TODO: CHỉnh sửa sao cho giữa Java và C tương tác với nhau ờ hàm producer.send
     
         for(int i = 0;i < 10; i++){
             producer.send(new ProducerRecord<String, String>(topicName, Integer.toString(i), Integer.toString(i)));
