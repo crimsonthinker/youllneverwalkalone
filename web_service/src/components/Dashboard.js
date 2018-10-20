@@ -1,10 +1,35 @@
 import React, { Component } from 'react';
-import '../Dashboard.css';
-
+import io from 'socket.io-client';
 class Dashboard extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+        n_temperature: "...",
+        n_humidity:"...",
+        n_soil_humidity: "...",
+        n_light: "..."
+    }
+    this.socket = null;
+    this.queue_max_size = 10;
+  }
+  componentWillMount() {
+    this.socket = io('localhost:9093');
+    this.socket.on('newMessage', (response) => {this.newMessage(response)}); //lắng nghe event 'newMessage' và gọi hàm newMessage khi có event
+  }
+  newMessage(m) {
+    var tmp = m.substr(1,m.length - 2).split(',');
+    console.log(tmp.toString())
+    this.setState({
+        n_temperature: tmp[0],
+        n_humidity:tmp[1],
+        n_soil_humidity: tmp[2],
+        n_light: tmp[3]
+    });
+  }; 
     render() {
         return (
             <div>
+        <p>{this.state.n_temperature},{this.state.n_humidity},{this.state.n_soil_humidity},{this.state.n_light}</p>
     <div className="container-fluid">
       {/* Breadcrumbs*/}
       <ol className="breadcrumb">
