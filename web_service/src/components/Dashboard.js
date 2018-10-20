@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import '../Dashboard.css';
 
 class Dashboard extends Component {
     render() {
@@ -48,7 +49,18 @@ class Dashboard extends Component {
         </div>
        
       </div>
-      
+      <div className="form-group">
+        <label for="gender1" className="col-sm-4 control-label">Chọn TOPIC cần đăng ký thêm:</label>
+        <div className="col-sm-4">
+        <select className="form-control selcls" id="gender1">
+          <option>Nhiệt độ user A</option>
+          <option>Độ ẩm user B</option>
+          <option>Ánh sáng user C</option>
+        </select>          
+        <button type="button" className="btn btn-danger btn-lg btn3d"><span className="glyphicon glyphicon-ok" /> Đăng ký</button>
+        </div>
+</div>   
+
       <div className="row">
   <div className="col-3"><button type="button" className="btn btn-success btn-lg btn3d"><span className="glyphicon glyphicon-ok" /> Tưới cây</button></div>
   <div className="col-3"><button type="button" className="btn btn-primary btn-lg btn3d"><span className="glyphicon glyphicon-ok" /> Chia sẻ TOPIC</button></div>

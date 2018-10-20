@@ -7,21 +7,23 @@ var kafka = require('kafka-node'),
             {topic: "basic_topic"}
         ],
         {
-            autoCommit: true,
+            autoCommit: false,
             fromOffset: 'earliest'
         }
     );
-
+module.exports = consumer;
+/*
 consumer.on('message', function (message) {
+    kafka_data = message;
     console.log(message);
 });
  
 consumer.on("error", function(err) {
-    console.log("error", err);
+    console.log("Waiting for Java server to start...");
 });
  
 process.on("SIGINT", function() {
     consumer.close(true, function() {
         process.exit();
     });
-});
+});*/

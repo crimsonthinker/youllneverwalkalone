@@ -10,9 +10,16 @@ public class DataProducer {
     static Properties props = new Properties();
     public static void main(String[] args) throws Exception{
         //Calling Zookeeper server and Kafka server using processes
-        Process zookeeperServer = rt.exec("kafka/bin/zookeeper-server-start.sh kafka/config/zookeeper.properties");
-        Process kafkaServer = rt.exec("kafka/bin/kafka-server-start.sh kafka/config/server.properties");
-
+        boolean is_windows = System.getProperty("os.name").startsWith("Windows"); 
+        Process zookeeperServer;
+        Process kafkaServer;
+        if (is_windows){
+            zookeeperServer = rt.exec("kafka/bin/windows/zookeeper-server-start.bat kafka/config/zookeeper.properties");
+            kafkaServer = rt.exec("kafka/bin/windows/kafka-server-start.bat kafka/config/server.properties");
+        }else{
+            zookeeperServer = rt.exec("kafka/bin/zookeeper-server-start.sh kafka/config/zookeeper.properties");
+            kafkaServer = rt.exec("kafka/bin/kafka-server-start.sh kafka/config/server.properties");
+        }
         System.out.println("Servers created. Begin srteaming data...");
 
         //Topic name
@@ -29,9 +36,6 @@ public class DataProducer {
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 
         Producer<String, String> producer = new KafkaProducer(props);
-            
-        //Trả về số từ 0 tới 1000000
-        //TODO: CHỉnh sửa sao cho giữa Java và C tương tác với nhau ờ hàm producer.send
     
         for(int i = 0;i < 10; i++){
             producer.send(new ProducerRecord<String, String>(topicName, Integer.toString(i), Integer.toString(i)));
@@ -42,10 +46,7 @@ public class DataProducer {
         producer.close();
 
         System.out.println("Closing servers...");
-        //Destroying serves
-        if (kafkaServer != null && zookeeperServer != null){
-            kafkaServer.destroy();
-            zookeeperServer.destroy();
-        }
-   }
+        kafkaServer.destroy();
+        zookeeperServer.destroy();
+    }
 }
