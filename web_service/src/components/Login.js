@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import '../Login.css';
 import {NavLink} from 'react-router-dom';
+const axios = require('axios');
 class Login extends Component {
   constructor(props) {
     super(props);
@@ -23,10 +24,17 @@ class Login extends Component {
     });
   }
 
-  handleSubmit(event) {
-    alert('Your email is: ' + this.state.email +'\n Your pw is '+this.state.password);
-    event.preventDefault();
-  }
+  handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+        const res = await axios.post('/api/login', ({ username: this.state.username, password: this.state.password }));
+        localStorage.setItem("x-access-token", res.data);
+        this.props.history.replace('/');
+    } catch (e) {
+        console.log(e);
+    }
+    
+}
     render() {
         return (
           <div id="LoginForm" >
