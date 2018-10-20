@@ -4,10 +4,10 @@ class Dashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        n_temperature: "...",
-        n_humidity:"...",
-        n_soil_humidity: "...",
-        n_light: "..."
+        n_temperature: "",
+        n_humidity:"",
+        n_soil_humidity: "",
+        n_light: ""
     }
     this.socket = null;
     this.queue_max_size = 10;
@@ -29,7 +29,6 @@ class Dashboard extends Component {
     render() {
         return (
             <div>
-        <p>{this.state.n_temperature},{this.state.n_humidity},{this.state.n_soil_humidity},{this.state.n_light}</p>
     <div className="container-fluid">
       {/* Breadcrumbs*/}
       <ol className="breadcrumb">
@@ -46,7 +45,7 @@ class Dashboard extends Component {
               <div className="card-body-icon">
                 <i className="fas fa-fw fa-comments" />
               </div>
-              <div className="mr-5">Độ ẩm hiện tại: 98%</div>
+              <div className="mr-5">Độ ẩm hiện tại: {this.state.n_humidity}</div>
             </div>
          
           </div>
@@ -57,7 +56,7 @@ class Dashboard extends Component {
               <div className="card-body-icon">
                 <i className="fas fa-fw fa-list" />
               </div>
-              <div className="mr-5">Nhiệt độ hiện tại: 32 độ C</div>
+              <div className="mr-5">Nhiệt độ hiện tại: {this.state.n_temperature}</div>
             </div>
           </div>
         </div>
@@ -74,16 +73,41 @@ class Dashboard extends Component {
         </div>
        
       </div>
+      <div className="row">
+        <div className="col-xl-4 col-sm-6 mb-3">
+          <div className="card text-white bg-warning o-hidden h-100">
+            <div className="card-body">
+              <div className="card-body-icon">
+                <i className="fas fa-fw fa-comments" />
+              </div>
+              <div className="mr-5">Ánh sáng hiện tại: {this.state.n_light}</div>
+            </div>
+         
+          </div>
+        </div>
+        <div className="col-xl-4 col-sm-6 mb-3">
+          <div className="card text-white bg-info o-hidden h-100">
+            <div className="card-body">
+              <div className="card-body-icon">
+                <i className="fas fa-fw fa-list" />
+              </div>
+              <div className="mr-5">Độ ẩm đất hiện tại: {this.state.n_soil_humidity}</div>
+            </div>
+          </div>
+        </div>
+       
+      </div>
       <div className="form-group">
         <label for="gender1" className="col-sm-4 control-label">Chọn TOPIC cần đăng ký thêm:</label>
         <div className="col-sm-4">
         <select className="form-control selcls" id="gender1">
-          <option>Nhiệt độ user A</option>
-          <option>Độ ẩm user B</option>
-          <option>Ánh sáng user C</option>
+          <option>Nhiệt độ</option>
+          <option>Độ ẩm </option>
+          <option>Ánh sáng </option>
         </select>          
         <button type="button" className="btn btn-danger btn-lg btn3d"><span className="glyphicon glyphicon-ok" /> Đăng ký</button>
         </div>
+
 </div>   
 
       <div className="row">
@@ -122,68 +146,13 @@ class Dashboard extends Component {
                     
                     <tbody>
                       <tr role="row" className="odd">
-                      <td>6th Octorber 2018 12:13:14 PM</td>
+                      <td>{Date(Date.now()).toString()}</td>
                         <td>98</td>
                         <td>98</td>
                         <td>33</td>
                         <td>300</td>
-                      </tr><tr role="row" className="even">
-                      <td>6th Octorber 2018 12:13:14 PM</td>
-
-                      <td>98</td>
-                        <td>98</td>
-                        <td>33</td>
-                        <td>300</td>
-                      </tr><tr role="row" className="odd">
-                      <td>6th Octorber 2018 12:13:14 PM</td>
-
-                      <td>98</td>
-                        <td>98</td>
-                        <td>33</td>
-                        <td>300</td>
-                      </tr><tr role="row" className="even">
-                      <td>6th Octorber 2018 12:13:14 PM</td>
-
-                      <td>98</td>
-                        <td>98</td>
-                        <td>33</td>
-                        <td>300</td>
-                      </tr><tr role="row" className="odd">
-                      <td>6th Octorber 2018 12:13:14 PM</td>
-
-                      <td>98</td>
-                        <td>98</td>
-                        <td>33</td>
-                        <td>300</td>
-                      </tr><tr role="row" className="even">
-                      <td>6th Octorber 2018 12:13:14 PM</td>
-
-                      <td>98</td>
-                        <td>98</td>
-                        <td>33</td>
-                        <td>300</td>
-                      </tr><tr role="row" className="odd">
-                      <td>6th Octorber 2018 12:13:14 PM</td>
-
-                      <td>98</td>
-                        <td>98</td>
-                        <td>33</td>
-                        <td>300</td>
-                      </tr><tr role="row" className="even">
-                      <td>6th Octorber 2018 12:13:14 PM</td>
-
-                      <td>98</td>
-                        <td>98</td>
-                        <td>33</td>
-                        <td>300</td>
-                      </tr><tr role="row" className="odd">
-                      <td>6th Octorber 2018 12:13:14 PM</td>
-
-                      <td>98</td>
-                        <td>98</td>
-                        <td>33</td>
-                        <td>300</td>
-                      </tr><tr role="row" className="even">
+                      </tr>
+                      <tr role="row" className="even">
                       <td>6th Octorber 2018 12:13:14 PM</td>
 
                       <td>98</td>

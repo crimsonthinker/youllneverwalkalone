@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import io from 'socket.io-client'
 class Lichsu extends Component {
   constructor(props) {
     super(props);

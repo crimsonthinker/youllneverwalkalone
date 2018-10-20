@@ -25,16 +25,23 @@ class Login extends Component {
   }
 
   handleSubmit = async (e) => {
+    alert("email: "+this.state.email+"\n password"+this.state.password);
     e.preventDefault();
-    try {
-        const res = await axios.post('/api/login', ({ username: this.state.username, password: this.state.password }));
-        localStorage.setItem("x-access-token", res.data);
+
+      axios.post('/login', {
+        email: this.state.email,
+        password: this.state.password
+      })
+      .then(function (response) {
+        console.log(response);
         this.props.history.replace('/');
-    } catch (e) {
-        console.log(e);
-    }
-    
-}
+      })
+      .catch(function (error) {
+        alert("Tài khoản không đúng, vui lòng nhập lại!");
+        console.log(error);
+      });
+      
+    } 
     render() {
         return (
           <div id="LoginForm" >

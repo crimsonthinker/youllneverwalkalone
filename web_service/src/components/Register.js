@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {NavLink} from 'react-router-dom';
 import '../Register.css';
+const axios = require('axios');
 class Register extends Component {
   constructor(props) {
     super(props);
@@ -28,10 +29,28 @@ class Register extends Component {
     });
   }
 
-  handleSubmit(event) {
-    alert('Your email is: ' + this.state.email +'\n Your pw is '+this.state.password +'\n Your username is '+this.state.username +'\n Heat is '+this.state.isheat +'\n Humid is '+this.state.ishumid +'\n Your light is '+this.state.islight +'\n Your humidsoil is '+this.state.ishumidsoil);
-    event.preventDefault();
-  }
+  handleSubmit = async (e) => {
+    alert("email: "+this.state.email+"\n password: "+this.state.password+"\n username: "+this.state.username);
+    e.preventDefault();
+
+      axios.post('/register', {
+        email: this.state.email,
+        password: this.state.password,
+        username:this.state.username,
+        isheat:this.state.isheat,
+        ishumid:this.state.ishumid,
+        islight:this.state.islight,
+        ishumidsoil:this.state.ishumidsoil
+      })
+      .then(function (response) {
+        console.log(response);
+        this.props.history.replace('/login');
+      })
+      .catch(function (error) {
+        alert(error)
+      });
+      
+    } 
     render() {
         return (
             <div id="LoginForm">
