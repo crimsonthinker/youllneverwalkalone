@@ -96,7 +96,7 @@ You can find the most recent version of this guide [here](https://github.com/fac
   - [S3 and CloudFront](#s3-and-cloudfront)
   - [Surge](#surge)
 - [Advanced Configuration](#advanced-configuration)
-- [Troubleshooting](#troubleshooting-1)
+- [Troubleshooting](#troubleshooting)
   - [`npm start` doesn’t detect changes](#npm-start-doesnt-detect-changes)
   - [`npm test` hangs or crashes on macOS Sierra](#npm-test-hangs-or-crashes-on-macos-sierra)
   - [`npm run build` exits too early](#npm-run-build-exits-too-early)
@@ -163,8 +163,6 @@ Read instructions below for using assets from JavaScript and HTML.
 
 You can, however, create more top-level directories.<br>
 They will not be included in the production build so you can use them for things like documentation.
-
-If you have Git installed and your project is not part of a larger repository, then a new repository will be initialized resulting in an additional `.git/` top-level directory.
 
 ## Available Scripts
 

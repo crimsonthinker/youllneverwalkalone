@@ -14,13 +14,8 @@ class DieuHuongURL extends Component {
             <Route exact path="/" component={Dashboard} ></Route>
             <Route path="/history" component={Lichsu} ></Route>
         </IntervalRenderer>
-
-    
-    
     </div>
-    
-    
-        );
+    );
     }
 }
 
