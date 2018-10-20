@@ -1,3 +1,9 @@
+var app = require('express')();
+var io = require('socket.io').listen(9093);
+
+function callSockets(io, message){
+    io.sockets.emit('newMessage', message);
+}
 var kafka = require('kafka-node'),
     Consumer = kafka.Consumer,
     client = new kafka.Client(),
@@ -11,19 +17,18 @@ var kafka = require('kafka-node'),
             fromOffset: 'earliest'
         }
     );
-module.exports = consumer;
-/*
 consumer.on('message', function (message) {
-    kafka_data = message;
-    console.log(message);
+    callSockets(io,message.value);
 });
  
 consumer.on("error", function(err) {
-    console.log("Waiting for Java server to start...");
+    consumer.pause()
+    console.log(err);
+    consumer.resume();
 });
  
 process.on("SIGINT", function() {
     consumer.close(true, function() {
         process.exit();
     });
-});*/
+});
