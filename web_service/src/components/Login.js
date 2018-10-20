@@ -2,9 +2,34 @@ import React, { Component } from 'react';
 import '../Login.css';
 import {NavLink} from 'react-router-dom';
 class Login extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      username: '',
+      password:''
+    };
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange(event) {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+
+    this.setState({
+      [name]: value
+    });
+  }
+
+  handleSubmit(event) {
+    alert('Your username is: ' + this.state.username +'\n Your pw is '+this.state.password);
+    event.preventDefault();
+  }
     render() {
         return (
-          <div id="LoginForm">
+          <div id="LoginForm" >
                 <div className="container">
   <h1 className="form-heading">SMART FARM</h1>
   <div className="login-form">
@@ -13,16 +38,15 @@ class Login extends Component {
         <h2>ĐĂNG NHẬP</h2>
         <p>Nhập tài khoản để sử dụng hệ thống</p>
       </div>
-      <form id="Login">
+      <form id="Login" onSubmit={this.handleSubmit}>
         <div className="form-group">
-          <input type="email" className="form-control" id="inputEmail" placeholder="Tên tài khoản" />
+          <input name="username" type="email" className="form-control" id="inputEmail" placeholder="Tên tài khoản" value={this.state.username} onChange={this.handleChange} />
         </div>
         <div className="form-group">
-          <input type="password" className="form-control" id="inputPassword" placeholder="Mật khẩu" />
+          <input name="password" type="password" className="form-control" id="inputPassword" placeholder="Mật khẩu" value={this.state.password} onChange={this.handleChange}/>
         </div>
-        <NavLink to="/">
-        <button type="submit" className="btn btn-success btn-lg btn3d">Đăng nhập</button>
-        </NavLink>
+        
+        <input type="submit" value="Đăng nhập" className="btn btn-success btn-lg btn3d"/>
         <NavLink to="/register">
         <button type="submit" className="btn btn-info btn-lg btn3d">Đăng ký</button>
         </NavLink>
