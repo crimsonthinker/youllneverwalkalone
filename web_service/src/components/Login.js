@@ -5,7 +5,7 @@ class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
+      email: '',
       password:''
     };
 
@@ -24,7 +24,7 @@ class Login extends Component {
   }
 
   handleSubmit(event) {
-    alert('Your username is: ' + this.state.username +'\n Your pw is '+this.state.password);
+    alert('Your email is: ' + this.state.email +'\n Your pw is '+this.state.password);
     event.preventDefault();
   }
     render() {
@@ -40,7 +40,7 @@ class Login extends Component {
       </div>
       <form id="Login" onSubmit={this.handleSubmit}>
         <div className="form-group">
-          <input name="username" type="email" className="form-control" id="inputEmail" placeholder="Tên tài khoản" value={this.state.username} onChange={this.handleChange} />
+          <input name="email" type="email" className="form-control" id="inputEmail" placeholder="Tên tài khoản" value={this.state.email} onChange={this.handleChange} />
         </div>
         <div className="form-group">
           <input name="password" type="password" className="form-control" id="inputPassword" placeholder="Mật khẩu" value={this.state.password} onChange={this.handleChange}/>
