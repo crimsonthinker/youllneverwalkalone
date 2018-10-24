@@ -1,0 +1,8 @@
+[2018-07-06 13:21:17,240] INFO Processed session termination for sessionid: 0x1646dea94f20001 (org.apache.zookeeper.server.PrepRequestProcessor)
+[2018-07-06 13:21:17,243] INFO Closed socket connection for client /127.0.0.1:55362 which had sessionid 0x1646dea94f20001 (org.apache.zookeeper.server.NIOServerCnxn)
+[2018-07-06 13:21:17,249] INFO Got user-level KeeperException when processing sessionid:0x1646dea94f20003 type:create cxid:0x25 zxid:0xb9 txntype:-1 reqpath:n/a Error Path:/controller Error:KeeperErrorCode = NodeExists for /controller (org.apache.zookeeper.server.PrepRequestProcessor)
+[2018-07-06 13:21:17,346] INFO Got user-level KeeperException when processing sessionid:0x1646dea94f20002 type:delete cxid:0x3a zxid:0xbb txntype:-1 reqpath:n/a Error Path:/admin/preferred_replica_election Error:KeeperErrorCode = NoNode for /admin/preferred_replica_election (org.apache.zookeeper.server.PrepRequestProcessor)
+[2018-07-06 13:21:26,057] INFO Processed session termination for sessionid: 0x1646dea94f20003 (org.apache.zookeeper.server.PrepRequestProcessor)
+[2018-07-06 13:21:26,058] INFO Closed socket connection for client /127.0.0.1:55370 which had sessionid 0x1646dea94f20003 (org.apache.zookeeper.server.NIOServerCnxn)
+[2018-07-06 13:21:52,886] INFO Processed session termination for sessionid: 0x1646dea94f20002 (org.apache.zookeeper.server.PrepRequestProcessor)
+[2018-07-06 13:21:52,887] INFO Closed socket connection for client /127.0.0.1:55366 which had sessionid 0x1646dea94f20002 (org.apache.zookeeper.server.NIOServerCnxn)
