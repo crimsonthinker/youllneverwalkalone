@@ -3,17 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-<<<<<<< HEAD
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
-=======
-    "axios": "^0.18.0",
-    "babel-loader": "^8.0.4",
-    "react": "^16.5.2",
-    "react-dom": "^16.5.2",
-    "react-interval-renderer": "^1.0.1",
-    "react-router-dom": "^4.3.1",
->>>>>>> 62e0139f085fd65b47f12c18063b3e661a9be65f
     "react-scripts": "2.0.5",
     "socket.io-client": "^2.1.1"
   },
