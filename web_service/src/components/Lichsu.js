@@ -50,25 +50,20 @@ class Lichsu extends Component {
     var list_tempe=this.state.list_tempe;
     var list_soil_humid=this.state.list_soil_humid;
     var list_light=this.state.list_light;
-    list_date.reverse();
-    list_humid.reverse();
-    list_tempe.reverse();
-    list_soil_humid.reverse();
-    list_light.reverse();
     var rows = [];
     var numrows=this.state.list_date.length;
-    if(numrows<15){
+    if(numrows<30){
 
       for (var i = 0; i < numrows; i++) {
           // note: we add a key prop here to allow react to uniquely identify each
           // element in this array. see: https://reactjs.org/docs/lists-and-keys.html
           if(i%2==1)
           {
-            rows.push(<tr role="row" className="odd"><td>{list_date[i]}</td><td>{list_tempe[i]}</td><td>{list_humid[i]}</td><td>{list_soil_humid[i]}</td><td>{list_light[i]}</td></tr>);
+            rows.push(<tr role="row" className="odd"><td>{list_date[numrows-i-1]}</td><td>{list_tempe[numrows-i-1]}</td><td>{list_humid[numrows-i-1]}</td><td>{list_soil_humid[numrows-i-1]}</td><td>{list_light[numrows-i-1]}</td></tr>);
           }
           else 
           {
-            rows.push(<tr role="row" className="even"><td>{list_date[i]}</td><td>{list_tempe[i]}</td><td>{list_humid[i]}</td><td>{list_soil_humid[i]}</td><td>{list_light[i]}</td></tr>);
+            rows.push(<tr role="row" className="even"><td>{list_date[numrows-i-1]}</td><td>{list_tempe[numrows-i-1]}</td><td>{list_humid[numrows-i-1]}</td><td>{list_soil_humid[numrows-i-1]}</td><td>{list_light[numrows-i-1]}</td></tr>);
           }
         }
       }
@@ -78,11 +73,11 @@ class Lichsu extends Component {
           // element in this array. see: https://reactjs.org/docs/lists-and-keys.html
           if(i%2==1)
           {
-            rows.push(<tr role="row" className="odd"><td>{list_date[i]}</td><td>{list_tempe[i]}</td><td>{list_humid[i]}</td><td>{list_soil_humid[i]}</td><td>{list_light[i]}</td></tr>);
+            rows.push(<tr role="row" className="odd"><td>{list_date[numrows-i-1]}</td><td>{list_tempe[numrows-i-1]}</td><td>{list_humid[numrows-i-1]}</td><td>{list_soil_humid[numrows-i-1]}</td><td>{list_light[numrows-i-1]}</td></tr>);
           }
           else 
           {
-            rows.push(<tr role="row" className="even"><td>{list_date[i]}</td><td>{list_tempe[i]}</td><td>{list_humid[i]}</td><td>{list_soil_humid[i]}</td><td>{list_light[i]}</td></tr>);
+            rows.push(<tr role="row" className="even"><td>{list_date[numrows-i-1]}</td><td>{list_tempe[numrows-i-1]}</td><td>{list_humid[numrows-i-1]}</td><td>{list_soil_humid[numrows-i-1]}</td><td>{list_light[numrows-i-1]}</td></tr>);
           }
         }
       }
