@@ -127,7 +127,7 @@ public class DataProducer {
     for (int i = 0; i < 200; i++) {
       int[] obj = {i, i, i, i};
       String result = Arrays.toString(obj);
-      System.out.println(result);
+      System.out.println(result); //thang nay 1 cai nuala2 2 cai
       if(startRecording){
         out.write(result + "\n");
       }
