@@ -18,7 +18,7 @@ var kafka = require('kafka-node'),
     );
 consumer.on('message', function (message) {
     callSockets(io,message.value);
-    console.log(message.value);
+    console.log(message.value); //do thang nay in ra 1 cai
 });
  
 consumer.on("error", function(err) {
