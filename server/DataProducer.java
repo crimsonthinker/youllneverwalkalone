@@ -32,7 +32,8 @@ public class DataProducer {
     public static File FileRecorder;
     public static BufferedWriter r_out;
     public static Boolean startRecording = false;
-    public static String server_addr = "192.168.110.106";
+    public static String server_addr = "192.168.43.87";
+    public static Producer<String, String> producer;
 
     /*****/
 
@@ -88,76 +89,63 @@ public class DataProducer {
         // Topic name
         String topicName = "basic_topic";
         // Add properties
-        props.put("bootstrap.servers", server_addr + ":" + Integer.toString(kafka_port)); // Port must be 9092
+        props.put("bootstrap.servers", "localhost:" + Integer.toString(kafka_port)); // Port must be 9092
         props.put("acks", "all");
-        props.put("retries", 1);
-        props.put("batch.size", 16384);
-        props.put("linger.ms", 1);
-        props.put("buffer.memory", 33554432);
+        props.put("retries", 3);
+        props.put("batch.size", 999999999);
+        props.put("linger.ms", 2);
+        props.put("buffer.memory", 999999999);
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 
         System.out.println("Sensors connecting...");
-        Producer<String, String> producer = new KafkaProducer(props);
+        producer = new KafkaProducer(props);
         ServerSocket listen = new ServerSocket(8080);
         boolean connectSensor = true;
         int i = 0;
+        Socket socket = listen.accept();
         while (connectSensor) {
-            Socket socket = listen.accept();
+            socket = listen.accept();
             System.out.println("listening..");
             // reading post request from sensor
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             // to concatenate strings gotten
             StringBuilder sb = new StringBuilder();
             // send some response to the sensors
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            // BufferedWriter out = new BufferedWriter(new
+            // OutputStreamWriter(socket.getOutputStream()));
             String s;
-            try {
-                // keep reading line by line the request
-                // store each to string builder
-                while ((s = in.readLine()) != null) {
-                    System.out.println('>' + s);
-                    sb.append(s);
-                    out.write("echo Java server: " + s);
-                    out.newLine();
-                    out.flush();
-                }
-            } catch (SocketTimeoutException exception) {
-                // System.err.println(exception);
-                connectSensor = false;
-            } catch (IOException e) {
-                // ok, connection close, then send the data from sensor to kafka
-                out.close();
-                socket.close();
-                // position of each query to extract the parameters
-                int startIndex = sb.indexOf("?temp");
-                int tempIndex = sb.indexOf("&?humid");
-                int humidIndex = sb.indexOf("&?soilhumid");
-                int soil_humidIndex = sb.indexOf("&?light");
-                int stopIndex = sb.indexOf(" HTTP");
-
-                // our heroes, the status of smart farm, convert from string to float,
-                // prepare for sending
-                float temperature = Float.parseFloat(sb.substring(startIndex + 6, tempIndex));
-                float humidity = Float.parseFloat(sb.substring(tempIndex + 8, humidIndex));
-                float soil_humidity = Float.parseFloat(sb.substring(humidIndex + 12, soil_humidIndex));
-                float light = Float.parseFloat(sb.substring(soil_humidIndex + 8, stopIndex));
-
-                // time to send data to kafka server
-                float[] obj = { temperature, humidity, soil_humidity, light };
-                String result = Arrays.toString(obj);
-                producer.send(new ProducerRecord<String, String>(topicName, "1", result));
-                // dis is for recording files yo!
-                if (r_out != null) {
-                    r_out.write("result");
-                }
+            // keep reading line by line the request
+            // store each to string builder
+            while ((s = in.readLine()) != null) {
+                System.out.println('>' + s);
+                sb.append(s);
             }
-            /*
-             * int[] obj = new int[4]; obj[0] = i; obj[1] = i; obj[2] = i; obj[3] = i;
-             * String result = Arrays.toString(obj); producer.send(new
-             * ProducerRecord<String, String>(topicName, result, result)); i += 1;
-             * TimeUnit.SECONDS.sleep(2);
-             */
+            // ok, connection close, then send the data from sensor to kafka
+            socket.close();
+            // position of each query to extract the parameters
+            int startIndex = sb.indexOf("?temp");
+            int tempIndex = sb.indexOf("&?humid");
+            int humidIndex = sb.indexOf("&?soilhumid");
+            int soil_humidIndex = sb.indexOf("&?light");
+            int stopIndex = sb.indexOf(" HTTP");
+
+            // our heroes, the status of smart farm, convert from string to float,
+            // prepare for sending
+            float temperature = Float.parseFloat(sb.substring(startIndex + 6, tempIndex));
+            float humidity = Float.parseFloat(sb.substring(tempIndex + 8, humidIndex));
+            float soil_humidity = Float.parseFloat(sb.substring(humidIndex + 12, soil_humidIndex));
+            float light = Float.parseFloat(sb.substring(soil_humidIndex + 8, stopIndex));
+
+            // time to send data to kafka server
+            float[] obj = { temperature, humidity, soil_humidity, light };
+            String result = Arrays.toString(obj);
+            System.out.println(result);
+            producer.send(new ProducerRecord<String, String>(topicName, result));
+            // dis is for recording files yo!
+            if (r_out != null) {
+                r_out.write("result");
+            }
         }
         listen.close(); // destructor
         // close producer and servers

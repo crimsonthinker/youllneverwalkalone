@@ -86,6 +86,13 @@ class Dashboard extends Component {
     return <tbody>{rows}</tbody>;
   }
   render() {
+    const status = {
+      temp: this.state.list_tempe,
+      humid: this.state.list_humid,
+      soil_humid: this.state.list_soil_humid,
+      light: this.state.list_light,
+      date: this.state.list_date
+    };
     return (
       <div>
         <div className="container-fluid">
@@ -107,71 +114,26 @@ class Dashboard extends Component {
                   <div className="mr-5">Độ ẩm hiện tại: {this.state.n_humidity}
                   </div>
                 </div>
-                <div className="col-xl-4 col-sm-6 mb-3">
-                  <div className="card text-white bg-danger o-hidden h-100">
-                    <div className="card-body">
-                      <div className="card-body-icon">
-                        <i className="fas fa-fw fa-list" />
-                      </div>
-                      <div className="mr-5">Nhiệt độ hiện tại: 32 độ C</div>
-                    </div>
-                  </div>
-                  <div className="mr-5">Nhiệt độ hiện tại: {this.state.n_temperature}</div>
-                </div>
-
-                <div className="col-xl-4 col-sm-6 mb-3">
-                  <div className="card text-white bg-success o-hidden h-100">
-                    <div className="card-body">
-                      <div className="card-body-icon">
-                        <i className="fas fa-fw fa-list" />
-                      </div>
-                      <div className="mr-5">Tình trạng cây trồng: Đang cần tưới</div>
-                    </div>
-                  </div>
-                </div>
-
               </div>
-              <div className="form-group">
-                <label for="gender1" className="col-sm-4 control-label">Chọn TOPIC cần đăng ký thêm:</label>
-                <div className="col-sm-4">
-                  <select className="form-control selcls" id="gender1">
-                    <option>Nhiệt độ user A</option>
-                    <option>Độ ẩm user B</option>
-                    <option>Ánh sáng user C</option>
-                  </select>
-                  <button type="button" className="btn btn-danger btn-lg btn3d"><span className="glyphicon glyphicon-ok" /> Đăng ký</button>
-                </div>
-              </div>
-
-              <div className="row">
-                <div className="col-3"><button type="button" className="btn btn-success btn-lg btn3d"><span className="glyphicon glyphicon-ok" /> Tưới cây</button></div>
-                <div className="col-3"><button type="button" className="btn btn-primary btn-lg btn3d"><span className="glyphicon glyphicon-ok" /> Chia sẻ TOPIC</button></div>
-                <div className="col-3"><button type="button" className="btn btn-info btn-lg btn3d"><span className="glyphicon glyphicon-ok" /> Chia sẻ biểu đồ</button>
-                </div>
-                <div className="col-3"><button type="button" className="btn btn-warning btn-lg btn3d"><span className="glyphicon glyphicon-ok" /> Chia sẻ người dùng</button></div>
-              </div>
-
-
-
-              {/* Area Chart Example*/}
-              <div className="card mb-3">
-                <div className="card-header">
-                  <i className="fas fa-chart-area" />
-                  Biểu đồ
-                </div>
+            </div>
+            <div className="col-xl-4 col-sm-6 mb-3">
+              <div className="card text-white bg-danger o-hidden h-100">
                 <div className="card-body">
-                  <div className="chartjs-size-monitor" style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, overflow: 'hidden', pointerEvents: 'none', visibility: 'hidden', zIndex: -1 }}>
-                    <div className="chartjs-size-monitor-expand" style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, overflow: 'hidden', pointerEvents: 'none', visibility: 'hidden', zIndex: -1 }}>
-                      <div style={{ position: 'absolute', width: 1000000, height: 1000000, left: 0, top: 0 }}>
-                      </div>
-                      <div className="chartjs-size-monitor-shrink" style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, overflow: 'hidden', pointerEvents: 'none', visibility: 'hidden', zIndex: -1 }}>
-                        <div style={{ position: 'absolute', width: '200%', height: '200%', left: 0, top: 0 }} />
-                      </div>
-                    </div>
+                  <div className="card-body-icon">
+                    <i className="fas fa-fw fa-list" />
                   </div>
-                  <div id="visual">
+                  <div className="mr-5">Nhiệt độ hiện tại: 32 độ C</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-xl-4 col-sm-6 mb-3">
+              <div className="card text-white bg-success o-hidden h-100">
+                <div className="card-body">
+                  <div className="card-body-icon">
+                    <i className="fas fa-fw fa-list" />
                   </div>
-                  <canvas id="myAreaChart" width={644} height={193} style={{ display: 'block', width: 644, height: 193 }} className="chartjs-render-monitor" />
+                  <div className="mr-5">Tình trạng cây trồng: Đang cần tưới</div>
                 </div>
               </div>
             </div>
@@ -228,9 +190,21 @@ class Dashboard extends Component {
           <div className="card mb-3">
             <div className="card-header">
               <i className="fas fa-chart-area" />
-              Biểu đồ</div>
-            <div className="card-body"><div className="chartjs-size-monitor" style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, overflow: 'hidden', pointerEvents: 'none', visibility: 'hidden', zIndex: -1 }}><div className="chartjs-size-monitor-expand" style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, overflow: 'hidden', pointerEvents: 'none', visibility: 'hidden', zIndex: -1 }}><div style={{ position: 'absolute', width: 1000000, height: 1000000, left: 0, top: 0 }} /></div><div className="chartjs-size-monitor-shrink" style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, overflow: 'hidden', pointerEvents: 'none', visibility: 'hidden', zIndex: -1 }}><div style={{ position: 'absolute', width: '200%', height: '200%', left: 0, top: 0 }} /></div></div>
-              <canvas id="myAreaChart" width={644} height={193} style={{ display: 'block', width: 644, height: 193 }} className="chartjs-render-monitor" />
+              Biểu đồ
+            </div>
+            <div className="card-body">
+              <div className="chartjs-size-monitor" style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, overflow: 'hidden', pointerEvents: 'none', visibility: 'hidden', zIndex: -1 }}>
+                <div className="chartjs-size-monitor-expand" style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, overflow: 'hidden', pointerEvents: 'none', visibility: 'hidden', zIndex: -1 }}>
+                  <div style={{ position: 'absolute', width: 1000000, height: 1000000, left: 0, top: 0 }} />
+                </div>
+                <div className="chartjs-size-monitor-shrink" style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, overflow: 'hidden', pointerEvents: 'none', visibility: 'hidden', zIndex: -1 }}>
+                  <div style={{ position: 'absolute', width: '200%', height: '200%', left: 0, top: 0 }} />
+                </div>
+              </div>
+
+              <div id="temp-chart" className="chart">
+                <Chart data={status} />
+              </div>
             </div>
           </div>
           {/* DataTables Example */}
@@ -266,6 +240,7 @@ class Dashboard extends Component {
 
           </div >
         </div>
+
       </div>
     );
   }
