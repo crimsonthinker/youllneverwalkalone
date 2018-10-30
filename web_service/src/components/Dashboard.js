@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Chart from './Visual';
 import io from 'socket.io-client';
-const API_URL = "http://localhost:4000/sensor"
 
 class Dashboard extends Component {
   constructor(props) {
@@ -10,14 +9,19 @@ class Dashboard extends Component {
       n_temperature: "...",
       n_humidity: "...",
       n_soil_humidity: "...",
-      n_light: "..."
+      n_light: "...",
+      sens_results: {
+        results: []
+      }
     }
     this.socket = null;
     this.queue_max_size = 10;
   }
   componentWillMount() {
+
     this.socket = io('localhost:9093');
-    this.socket.on('newMessage', (response) => { this.newMessage(response) }); //lắng nghe event 'newMessage' và gọi hàm newMessage khi có event
+    this.socket.on('newMessage', (response) => { this.newMessage(response); this.storeJSON(); }); //lắng nghe event 'newMessage' và gọi hàm newMessage khi có event
+
   }
   newMessage(m) {
     var tmp = m.substr(1, m.length - 2).split(',');
@@ -28,21 +32,28 @@ class Dashboard extends Component {
       n_soil_humidity: tmp[2],
       n_light: tmp[3]
     });
-    var fs = require('fs');
-    var fileName = './sensor.json';
-    var file = require(fileName);
-
-    file.key = "new value";
-
-    fs.writeFile(fileName, JSON.stringify(file), function (err) {
-      if (err) return console.log(err);
-      console.log(JSON.stringify(file));
-      console.log('writing to ' + fileName);
+  };
+  storeJSON() {
+    let status = {
+      temp: this.state.n_temperature,
+      humid: this.state.n_humidity,
+      soil_humid: this.state.n_soil_humidity,
+      light: this.state.n_light,
+      time: Date.now().toString()
+    }
+    let sensor = this.state.sens_results;
+    if (sensor.results.length == 20) {
+      delete sensor.results[0];
+    }
+    sensor.results.push(status);
+    this.setState({
+      sens_results: sensor
     });
+    console.log(JSON.stringify(this.state.sens_results));
   };
   render() {
-    const { results } = this.state.n_temperature;
-
+    // read data from JSON file of sensors data for visualisation
+    const { results } = this.state.sens_results;
     return (
       <div>
         <p>{this.state.n_temperature},{this.state.n_humidity},{this.state.n_soil_humidity},{this.state.n_light}</p>

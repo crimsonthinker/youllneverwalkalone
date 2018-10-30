@@ -29,35 +29,31 @@ public class DataProducer {
   private static int kafka_port = 9092;
   private static int recording_server_port = 9094;
   public static File FileRecorder;
-  public static BufferedWriter out;
+  public static BufferedWriter r_out;
   public static Boolean startRecording = false;
 
   static class SignalHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange he) throws IOException {
-      System.out.println("ON!");
-      System.out.println(startRecording);
-      System.out.println(out == null);
       startRecording = !startRecording;
       if (startRecording) {
         String pathToFile = "./hello.txt";
         // doing somthing to receive string file
         try {
-          out = new BufferedWriter(new FileWriter(pathToFile));
-          out.write("temperature,humidity,soil humidity,light\n");
+          r_out = new BufferedWriter(new FileWriter(pathToFile));
+          r_out.write("temperature,humidity,soil humidity,light\n");
         } catch (IOException ioe) {
           System.out.println(ioe);
         }
       } else {
-        out.close();
+        r_out.close();
       }
     }
   }
 
   public static void main(String[] args) throws Exception {
     // data recorder server
-    HttpServer recorderServer =
-        HttpServer.create(new InetSocketAddress(recording_server_port), 0);
+    HttpServer recorderServer = HttpServer.create(new InetSocketAddress(recording_server_port), 0);
     recorderServer.createContext("/", new SignalHandler());
     recorderServer.start();
     /*********************************************************************************************/
@@ -67,20 +63,15 @@ public class DataProducer {
     Process zookeeperServer;
     Process kafkaServer;
     if (is_windows) {
-      zookeeperServer = rt.exec(
-          "kafka/bin/windows/zookeeper-server-start.bat kafka/config/zookeeper.properties");
+      zookeeperServer = rt.exec("kafka/bin/windows/zookeeper-server-start.bat kafka/config/zookeeper.properties");
       TimeUnit.SECONDS.sleep(5);
-      kafkaServer = rt.exec(
-          "kafka/bin/windows/kafka-server-start.bat kafka/config/server.properties");
+      kafkaServer = rt.exec("kafka/bin/windows/kafka-server-start.bat kafka/config/server.properties");
     } else {
-      zookeeperServer = rt.exec(
-          "kafka/bin/zookeeper-server-start.sh kafka/config/zookeeper.properties");
+      zookeeperServer = rt.exec("kafka/bin/zookeeper-server-start.sh kafka/config/zookeeper.properties");
       TimeUnit.SECONDS.sleep(5);
-      kafkaServer = rt.exec(
-          "kafka/bin/kafka-server-start.sh kafka/config/server.properties");
+      kafkaServer = rt.exec("kafka/bin/kafka-server-start.sh kafka/config/server.properties");
     }
-    System.out.println(
-        "Waiting for Zookeeper and Kafka server to finish creating...");
+    System.out.println("Waiting for Zookeeper and Kafka server to finish creating...");
     TimeUnit.SECONDS.sleep(5);
     /*********************************************************************************************/
 
@@ -89,17 +80,14 @@ public class DataProducer {
     // Topic name
     String topicName = "basic_topic";
     // Add properties
-    props.put("bootstrap.servers",
-              "localhost:" + Integer.toString(kafka_port)); // Port must be 9092
+    props.put("bootstrap.servers", "localhost:" + Integer.toString(kafka_port)); // Port must be 9092
     props.put("acks", "all");
     props.put("retries", 1);
     props.put("batch.size", 16384);
     props.put("linger.ms", 1);
     props.put("buffer.memory", 33554432);
-    props.put("key.serializer",
-              "org.apache.kafka.common.serialization.StringSerializer");
-    props.put("value.serializer",
-              "org.apache.kafka.common.serialization.StringSerializer");
+    props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+    props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 
     System.out.println("Sensors connecting...");
     Producer<String, String> producer = new KafkaProducer(props);
@@ -110,13 +98,11 @@ public class DataProducer {
       System.out.println("listening..");
 
       // reading post request from sensor
-      BufferedReader in =
-          new BufferedReader(new InputStreamReader(socket.getInputStream()));
+      BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
       // to concatenate strings gotten
       StringBuilder sb = new StringBuilder();
       // send some response to the sensors
-      BufferedWriter out =
-          new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+      BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
       String s;
       try {
         // keep reading line by line the request
@@ -144,24 +130,17 @@ public class DataProducer {
         int stopIndex = sb.indexOf(" HTTP");
 
         // our heroes, the status of smart farm, convert from string to float,
-        // prepare
-        // for sending
-        float temperature =
-            Float.parseFloat(sb.substring(startIndex + 6, tempIndex));
-        float humidity =
-            Float.parseFloat(sb.substring(tempIndex + 8, humidIndex));
-        float soil_humidity =
-            Float.parseFloat(sb.substring(humidIndex + 12, soil_humidIndex));
-        float light =
-            Float.parseFloat(sb.substring(soil_humidIndex + 8, stopIndex));
+        // prepare for sending
+        float temperature = Float.parseFloat(sb.substring(startIndex + 6, tempIndex));
+        float humidity = Float.parseFloat(sb.substring(tempIndex + 8, humidIndex));
+        float soil_humidity = Float.parseFloat(sb.substring(humidIndex + 12, soil_humidIndex));
+        float light = Float.parseFloat(sb.substring(soil_humidIndex + 8, stopIndex));
 
         // time to send data to kafka server
-        float[] obj = {temperature, humidity, soil_humidity, light};
+        float[] obj = { temperature, humidity, soil_humidity, light };
         String result = Arrays.toString(obj);
-        System.out.println(result);
-        producer.send(
-            new ProducerRecord<String, String>(topicName, result, result));
-        TimeUnit.SECONDS.sleep(2);
+        producer.send(new ProducerRecord<String, String>(topicName, "1", result));
+        //
       }
     }
     listen.close(); // destructor
