@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "axios": "^0.18.0",
     "file-exists": "^5.0.1",
     "fs": "0.0.1-security",
     "fs-": "^1.0.0",

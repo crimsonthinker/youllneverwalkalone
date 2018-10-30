@@ -32,7 +32,7 @@ public class DataProducer {
     public static File FileRecorder;
     public static BufferedWriter r_out;
     public static Boolean startRecording = false;
-    public static String server_addr = "192.168.43.242";
+    public static String server_addr = "192.168.110.106";
 
     /*****/
 
