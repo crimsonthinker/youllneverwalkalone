@@ -7,5 +7,5 @@ javac -cp "./kafka/libs/*" DataProducer.java
 For Linux: java -cp ./kafka/libs/*: DataProducer$SignalHandler
 ```
 ```	
-For Windows: java -cp .\kafka\libs\*; DataProducer$SignalHandler	
+For Windows: java -cp .\kafka\libs\*; DataProducer	
 ```
