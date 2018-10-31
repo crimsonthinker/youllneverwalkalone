@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 [2018-10-30 10:20:20,204] INFO Shutting down the log cleaner. (kafka.log.LogCleaner)
 [2018-10-30 10:20:20,205] INFO [kafka-log-cleaner-thread-0]: Shutting down (kafka.log.LogCleaner)
 [2018-10-30 10:20:20,205] INFO [kafka-log-cleaner-thread-0]: Stopped (kafka.log.LogCleaner)
@@ -22,3 +23,17 @@
 [2018-10-30 10:29:12,741] INFO [kafka-log-cleaner-thread-0]: Shutdown completed (kafka.log.LogCleaner)
 [2018-10-30 10:29:39,562] INFO Starting the log cleaner (kafka.log.LogCleaner)
 [2018-10-30 10:29:39,625] INFO [kafka-log-cleaner-thread-0]: Starting (kafka.log.LogCleaner)
+=======
+[2018-10-30 20:13:41,569] INFO Shutting down the log cleaner. (kafka.log.LogCleaner)
+[2018-10-30 20:13:41,572] INFO [kafka-log-cleaner-thread-0]: Shutting down (kafka.log.LogCleaner)
+[2018-10-30 20:13:41,573] INFO [kafka-log-cleaner-thread-0]: Stopped (kafka.log.LogCleaner)
+[2018-10-30 20:13:41,573] INFO [kafka-log-cleaner-thread-0]: Shutdown completed (kafka.log.LogCleaner)
+[2018-10-30 20:13:45,999] INFO Starting the log cleaner (kafka.log.LogCleaner)
+[2018-10-30 20:13:46,022] INFO [kafka-log-cleaner-thread-0]: Starting (kafka.log.LogCleaner)
+[2018-10-30 20:28:39,923] INFO Shutting down the log cleaner. (kafka.log.LogCleaner)
+[2018-10-30 20:28:39,923] INFO [kafka-log-cleaner-thread-0]: Shutting down (kafka.log.LogCleaner)
+[2018-10-30 20:28:39,923] INFO [kafka-log-cleaner-thread-0]: Stopped (kafka.log.LogCleaner)
+[2018-10-30 20:28:39,923] INFO [kafka-log-cleaner-thread-0]: Shutdown completed (kafka.log.LogCleaner)
+[2018-10-30 20:28:44,241] INFO Starting the log cleaner (kafka.log.LogCleaner)
+[2018-10-30 20:28:44,266] INFO [kafka-log-cleaner-thread-0]: Starting (kafka.log.LogCleaner)
+>>>>>>> a0eaf789ca3b5841a5a01af77542dc6f2c5d0f20
