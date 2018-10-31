@@ -3,6 +3,7 @@ import io from 'socket.io-client';
 class Lichsu extends Component {
   constructor(props) {
     super(props);
+    this.server_addr = "192.168.43.242";
     this.state = {
       n_temperature: "",
       n_humidity:"",
@@ -18,7 +19,7 @@ class Lichsu extends Component {
     this.queue_max_size = 10;
   }
   componentWillMount() {
-    this.socket = io('localhost:9093');
+    this.socket = io(this.server_addr + ':9093');
     this.socket.on('newMessage', (response) => {
       
       this.newMessage(response);

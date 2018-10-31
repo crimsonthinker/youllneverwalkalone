@@ -171,8 +171,9 @@ public class DataProducer {
             */
             int[] obj = new int[4]; obj[0] = i; obj[1] = i; obj[2] = i; obj[3] = i;
             String result = Arrays.toString(obj);
+            System.out.println("Sensors connecting...");
             producer.send(
-                    new ProducerRecord<String, String>(topicName, result, result));
+                    new ProducerRecord<String, String>(topicName, "1", result));
             i += 1;
             TimeUnit.SECONDS.sleep(2);
         }
