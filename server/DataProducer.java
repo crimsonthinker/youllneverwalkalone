@@ -24,130 +24,146 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DataProducer {
-  static Runtime rt = Runtime.getRuntime();
-  static Properties props = new Properties();
-  private static int kafka_port = 9092;
-  private static int recording_server_port = 9094;
-  public static File FileRecorder;
-  public static BufferedWriter out;
-  public static Boolean startRecording = false;
+    static Runtime rt = Runtime.getRuntime();
+    static Properties props = new Properties();
+    private static int kafka_port = 9092;
+    // file recording server
+    private static int recording_server_port = 9094;
+    public static File FileRecorder;
+    public static BufferedWriter r_out;
+    public static Boolean startRecording = false;
+    public static String server_addr = "192.168.43.87";
+    public static Producer<String, String> producer;
 
+    /*****/
 
-  static class SignalHandler implements HttpHandler { //ham nhan tin hieu gui tu RecordRequestOn.js
-    @Override public void handle(HttpExchange he) throws IOException {
-      System.out.println("ON!");
-      System.out.println(startRecording);
-      System.out.println(out == null);
-      startRecording = !startRecording;
-      //De khi nhay qua day, thang java nhan dc ip cua client //,cai nay la server no nhan ip cua client de dat ten thui, con gui file phai nguoc lai
-      //eh de co gi ve nha ui ngam nghi lai chu nay gio ong noi no tum lum vcl :( 
-      //java se luu file do voi ten la ip cua client do.
-      //de toi tui coi lai
-      //Nho la luc luu file, tach 4 thuoc tinh ra thanh 4 file nha.
-      if(startRecording){ //Khuc nay la khuc bat dau ghi du lieu, TODO: Ong sua lai khuc nay sao cho no ghi du lieu len server
-        //tuc la ghi du lieu vo may minh ha ????
-        String pathToFile = "./hello.txt";
-        //doing somthing to receive string file
-        try {
-          out = new BufferedWriter(new FileWriter(pathToFile));
-          out.write("temperature,humidity,soil humidity,light\n");
+    static class SignalHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange he) throws IOException {
+            System.out.println("ON!");
+            System.out.println(startRecording);
+            System.out.println(r_out == null);
+            startRecording = !startRecording;
+            if (startRecording) {
+                String pathToFile = "./hello.txt";
+                // doing somthing to receive string file
+                try {
+                    r_out = new BufferedWriter(new FileWriter(pathToFile));
+                    r_out.write("temperature,humidity,soil humidity,light\n");
+                } catch (IOException ioe) {
+                    System.out.println(ioe);
+                }
+            } else {
+                r_out.close();
+                r_out = null;
+            }
         }
-        catch(IOException ioe) {
-          System.out.println(ioe);
+    }
+
+    public static void main(String[] args) throws Exception {
+        // data recorder server
+        HttpServer recorderServer = HttpServer.create(new InetSocketAddress(recording_server_port), 0);
+        recorderServer.createContext("/", new SignalHandler());
+        recorderServer.start();
+        /*********************************************************************************************/
+
+        // Calling Zookeeper server and Kafka server using processes
+        boolean is_windows = System.getProperty("os.name").startsWith("Windows");
+        Process zookeeperServer;
+        Process kafkaServer;
+        if (is_windows) {
+            zookeeperServer = rt.exec("kafka/bin/windows/zookeeper-server-start.bat kafka/config/zookeeper.properties");
+            TimeUnit.SECONDS.sleep(5);
+            kafkaServer = rt.exec("kafka/bin/windows/kafka-server-start.bat kafka/config/server.properties");
+        } else {
+            zookeeperServer = rt.exec("kafka/bin/zookeeper-server-start.sh kafka/config/zookeeper.properties");
+            TimeUnit.SECONDS.sleep(5);
+            kafkaServer = rt.exec("kafka/bin/kafka-server-start.sh kafka/config/server.properties");
         }
-      }else{
-        out.close();
-      }
+        System.out.println("Waiting for Zookeeper and Kafka server to finish creating...");
+        TimeUnit.SECONDS.sleep(5);
+        /*********************************************************************************************/
+
+        // Begin kafka producer
+        System.out.println("Servers created. Begin streaming data...");
+        // Topic name
+        String topicName = "basic_topic";
+        // Add properties
+        props.put("bootstrap.servers", "localhost:" + Integer.toString(kafka_port)); // Port must be 9092
+        props.put("acks", "all");
+        props.put("retries", 3);
+        props.put("batch.size", 999999999);
+        props.put("linger.ms", 2);
+        props.put("buffer.memory", 999999999);
+        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+
+        System.out.println("Sensors connecting...");
+        producer = new KafkaProducer(props);
+        
+        // ServerSocket listen = new ServerSocket(8080);
+        // boolean connectSensor = true;
+        // int i = 0;
+        // Socket socket = listen.accept();
+        // while (connectSensor) {
+        //     socket = listen.accept();
+        //     System.out.println("listening..");
+        //     // reading post request from sensor
+        //     BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        //     // to concatenate strings gotten
+        //     StringBuilder sb = new StringBuilder();
+        //     // send some response to the sensors
+        //     // BufferedWriter out = new BufferedWriter(new
+        //     // OutputStreamWriter(socket.getOutputStream()));
+        //     String s;
+        //     // keep reading line by line the request
+        //     // store each to string builder
+        //     while ((s = in.readLine()) != null) {
+        //         System.out.println('>' + s);
+        //         sb.append(s);
+        //     }
+        //     // ok, connection close, then send the data from sensor to kafka
+        //     socket.close();
+        //     // position of each query to extract the parameters
+        //     int startIndex = sb.indexOf("?temp");
+        //     int tempIndex = sb.indexOf("&?humid");
+        //     int humidIndex = sb.indexOf("&?soilhumid");
+        //     int soil_humidIndex = sb.indexOf("&?light");
+        //     int stopIndex = sb.indexOf(" HTTP");
+
+        //     // our heroes, the status of smart farm, convert from string to float,
+        //     // prepare for sending
+        //     float temperature = Float.parseFloat(sb.substring(startIndex + 6, tempIndex));
+        //     float humidity = Float.parseFloat(sb.substring(tempIndex + 8, humidIndex));
+        //     float soil_humidity = Float.parseFloat(sb.substring(humidIndex + 12, soil_humidIndex));
+        //     float light = Float.parseFloat(sb.substring(soil_humidIndex + 8, stopIndex));
+
+        //     // time to send data to kafka server
+        //     float[] obj = { temperature, humidity, soil_humidity, light };
+        //     String result = Arrays.toString(obj);
+        //     System.out.println(result);
+        //     producer.send(new ProducerRecord<String, String>(topicName, result));
+        //     // dis is for recording files yo!
+        //     if (r_out != null) {
+        //         r_out.write("result");
+        //     }
+        // }
+        // listen.close(); // destructor
+        // close producer and servers
+        for (int i = 0; i < 200; i++) {
+            int[] obj = {i, i, i, i};
+            String result = Arrays.toString(obj);
+            System.out.println(result); //thang nay 1 cai nuala2 2 cai
+            if(startRecording){
+              out.write(result + "\n");
+            }
+            producer.send( new ProducerRecord<String, String>(topicName, result));
+            TimeUnit.SECONDS.sleep(2);
+          }
+        producer.close();
+        System.out.println("Closing servers...");
+        // Destroying serves
+        kafkaServer.destroy();
+        /***********************************************************************************/
     }
-  }
-
-  public static void main(String[] args) throws Exception {
-    //data recorder server
-    HttpServer recorderServer = HttpServer.create(new InetSocketAddress(recording_server_port),0);
-    recorderServer.createContext("/", new SignalHandler());
-    recorderServer.start();
-    /*********************************************************************************************/
-
-    // Calling Zookeeper server and Kafka server using processes
-    boolean is_windows = System.getProperty("os.name").startsWith("Windows");
-    Process zookeeperServer;
-    Process kafkaServer;
-    if (is_windows) {
-      zookeeperServer = rt.exec(
-          "kafka/bin/windows/zookeeper-server-start.bat kafka/config/zookeeper.properties");
-      TimeUnit.SECONDS.sleep(5);
-      kafkaServer = rt.exec(
-          "kafka/bin/windows/kafka-server-start.bat kafka/config/server.properties");
-    } else {
-      zookeeperServer = rt.exec(
-          "kafka/bin/zookeeper-server-start.sh kafka/config/zookeeper.properties");
-          TimeUnit.SECONDS.sleep(5);
-      kafkaServer = rt.exec(
-          "kafka/bin/kafka-server-start.sh kafka/config/server.properties");
-    }
-    System.out.println("Waiting for Zookeeper and Kafka server to finish creating...");
-    TimeUnit.SECONDS.sleep(5);
-    /*********************************************************************************************/
-
-    //Begin kafka producer
-    System.out.println("Servers created. Begin streaming data...");
-    // Topic name
-    String topicName = "basic_topic";
-    // Add properties
-    props.put("bootstrap.servers", "localhost:" + Integer.toString(kafka_port)); // Port must be 9092
-    props.put("acks", "all");
-    props.put("retries", 1);
-    props.put("batch.size", 16384);
-    props.put("linger.ms", 1);
-    props.put("buffer.memory", 33554432);
-    props.put("key.serializer",
-              "org.apache.kafka.common.serialization.StringSerializer");
-    props.put("value.serializer",
-              "org.apache.kafka.common.serialization.StringSerializer");
-
-    Producer<String, String> producer = new KafkaProducer(props);
-    /*******************************************************************************************/
-    /*
-    System.out.println("Sensor connecting...");
-    ServerSocket listen = new ServerSocket(8080);
-    Socket socket = listen.accept();
-    BufferedReader in =
-        new BufferedReader(new InputStreamReader(socket.getInputStream()));
-    BufferedWriter out =
-        new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-    String s;
-    try {
-      while ((s = in.readLine()) != null) {
-        System.out.println('>' + s);
-        out.write("echo Java server: " + s);
-        out.newLine();
-        out.flush();
-      }
-    } catch (Exception e) {
-      System.out.println("Client close");
-      out.close();
-      socket.close();
-      listen.close();
-    }
-    */
-    for (int i = 0; i < 200; i++) {
-      int[] obj = {i, i, i, i};
-      String result = Arrays.toString(obj);
-      System.out.println(result); //thang nay 1 cai nuala2 2 cai
-      if(startRecording){
-        out.write(result + "\n");
-      }
-      producer.send( new ProducerRecord<String, String>(topicName, result, result));
-      TimeUnit.SECONDS.sleep(2);
-    }
-
-    //destructor
-    // close producer and servers
-    producer.close();
-    System.out.println("Closing servers...");
-    // Destroying serves
-    kafkaServer.destroy();
-    /***********************************************************************************/
-
-  }
 }
