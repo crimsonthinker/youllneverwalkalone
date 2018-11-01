@@ -12,7 +12,11 @@ class Dashboard extends Component {
         list_humid:[],
         list_soil_humid:[],
         list_light:[],
-        list_date:[]
+        list_date:[],
+        isheat:false,
+        ishumid:true,
+        islight:false,
+        ishumidsoil:true
     }
     this.socket = null;
     this.queue_max_size = 10;
@@ -54,6 +58,26 @@ class Dashboard extends Component {
     var list_light=this.state.list_light;
     var rows = [];
     var numrows=this.state.list_date.length;
+    if(this.state.isheat==false){
+      for (var i=0;i<numrows;i++){
+        list_tempe[i]="Not allow";
+      }
+    }
+    if(this.state.ishumid==false){
+      for (var i=0;i<numrows;i++){
+        list_humid[i]="Not allow";
+      }
+    }
+    if(this.state.islight==false){
+      for (var i=0;i<numrows;i++){
+        list_light[i]="Not allow";
+      }
+    }
+    if(this.state.ishumidsoil==false){
+      for (var i=0;i<numrows;i++){
+        list_soil_humid[i]="Not allow";
+      }
+    }
     if(numrows<15){
 
       for (var i = 0; i < numrows; i++) {
