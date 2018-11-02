@@ -32,8 +32,10 @@ class Login extends Component {
         email: this.state.email,
         password: this.state.password
       })
-      .then(function (response) {
+      .then((response)=> {
         console.log(response);
+        localStorage.setItem('email', this.state.email)
+        //localStorage.removeItem('email')
         this.props.history.replace('/');
       })
       .catch(function (error) {

@@ -2,7 +2,26 @@ import React, { Component } from 'react';
 import '../App.css';
 import '../Button.css';
 import {NavLink} from 'react-router-dom';
+const axios = require('axios');
 class Nav extends Component {
+  change = async (e) => {
+    e.preventDefault();
+
+      axios.post('/logout', {
+        email:localStorage.getItem('email')
+      })
+      .then((response)=> {
+        console.log(response);
+        localStorage.removeItem('email');
+        //localStorage.removeItem('email')
+        window.location.replace('/login');
+      })
+      .catch(function (error) {
+        
+        alert(error);
+      });
+      
+    } 
     render() {
         return (
           <div >
@@ -22,10 +41,10 @@ class Nav extends Component {
         <i className="fas fa-user-circle fa-fw" />
       </a>
       <div className="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-      <NavLink to="/login">
+      
 
-        <a className="dropdown-item" >Logout</a>
-        </NavLink>
+        <a className="dropdown-item" onClick={this.change}>Logout</a>
+        
       </div>
      
     </li>

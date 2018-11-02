@@ -2,8 +2,13 @@ const express = require('express')
 const app = express()
 const mysql = require('mysql')
 const bcrypt = require('bcrypt')
+const bodyParser = require('body-parser')
 const saltRounds = 10
 
+app.use(bodyParser.json());
+
+//support parsing of application/x-www-form-urlencoded post data
+app.use(bodyParser.urlencoded({ extended: false }));
 
 
 //This function is used to create a connection to
@@ -26,14 +31,15 @@ Then it check email in the database.
 - If it does not return http status 404
 Password is encrypted before comparing.
 */
-app.get("/login", (req,res)=>{
+app.post("/login", (req,res)=>{
     //Get all params
-    var email = req.query.email
-    var password = req.query.password
+    var email = req.body.email
+    var password = req.body.password
 
     //This query for checking the exitstence of the email
     const queryString = "SELECT * FROM users WHERE email = ?"; 
-    
+
+    console.log('inside login')    
     //Connection to the database for checking
     connection().query(queryString,[email],(err,rows,fields)=>{
         //This error
@@ -75,8 +81,8 @@ app.get("/login", (req,res)=>{
         }
         else{
             //The email does not exist in the database
-            res.sendStatus(404)
-            console.log("Email not found.")
+            console.log('lllll')
+            res.status(404).send('Email not found');
             return
         }
     })
@@ -87,9 +93,9 @@ app.get("/login", (req,res)=>{
 The input param is email.
 */
 
-app.get("/logout",(req,res)=>{
+app.post("/logout",(req,res)=>{
     //Get mail
-    var email = req.query.email
+    var email = req.body.email
     
     //Use to check the existence of the user email
     const queryString = "SELECT * FROM users WHERE email = ?"; 
@@ -138,15 +144,16 @@ Then it check email in the database.
 - If it does not, insert to the database and return http status 200
 Password is encrypted before saving to the database.
 */
-app.get("/register", (req,res)=>{
+app.post("/register", (req,res)=>{
     //Get all params
-    var email = req.query.email
-    var password = req.query.password
-    var username = req.query.username
-    var isheat =  req.query.isheat.toLowerCase() == 'true'? 1: 0
-    var ishumid = req.query.ishumid.toLowerCase()  == 'true'? 1: 0
-    var islight = req.query.islight.toLowerCase()  == 'true'? 1: 0
-    var ishumidsoil = req.query.ishumidsoil.toLowerCase() == 'true'? 1: 0
+    console.log(req.body)
+    var email = req.body.email
+    var password = req.body.password
+    var username = req.body.username
+    var isheat =  req.body.isheat? 1: 0
+    var ishumid = req.body.ishumid? 1: 0
+    var islight = req.body.islight? 1: 0
+    var ishumidsoil = req.body.ishumidsoil? 1: 0
 
     //Encrypt password
     var salt = bcrypt.genSaltSync(saltRounds)
@@ -201,7 +208,7 @@ with the same order
 
 app.get("/current_login",(req,res)=>{
     //This query for getting information
-    const queryString = "SELECT * FROM users WHERE lastlogin >= lastlogout"; 
+    const queryString = `SELECT * FROM users WHERE lastlogin >= lastlogout AND email = '${req.query.email}'`; 
             
     //This connection for inserting the user info
     connection().query(queryString,[],(err,rows,fields)=>{
@@ -221,8 +228,9 @@ app.get("/current_login",(req,res)=>{
                         islight: row.islight,
                         ishumidsoil: row.ishumidsoil}
             })
+            console.log(returnValue)
             console.log("Get list current login successfully")
-            res.json(returnValue)
+            res.json(returnValue[0])
             return
         }
         console.log("No current login here.")
@@ -233,13 +241,13 @@ app.get("/current_login",(req,res)=>{
 
 /*This will update the subcribe of the email
 */
-app.get("/update",(req,res)=>{
+app.post("/update",(req,res)=>{
     //Get all params
-    var email = req.query.email
-    var isheat =  req.query.isheat.toLowerCase() == 'true'? 1: 0
-    var ishumid = req.query.ishumid.toLowerCase()  == 'true'? 1: 0
-    var islight = req.query.islight.toLowerCase()  == 'true'? 1: 0
-    var ishumidsoil = req.query.ishumidsoil.toLowerCase() == 'true'? 1: 0
+    var email = req.body.email
+    var isheat =  req.body.isheat? 1: 0
+    var ishumid = req.body.ishumid? 1: 0
+    var islight = req.body.islight? 1: 0
+    var ishumidsoil = req.body.ishumidsoil? 1: 0
 
     //This query for getting information
     const queryString = "SELECT * FROM users WHERE email = ?"; 
