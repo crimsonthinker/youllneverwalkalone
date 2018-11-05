@@ -5,7 +5,7 @@ import io from 'socket.io-client';
 class Dashboard extends Component {
   constructor(props) {
     super(props);
-    this.server_addr = "192.168.43.242";
+    this.server_addr = "192.168.43.85";
     this.state = {
       n_temperature: "",
       n_humidity: "",
