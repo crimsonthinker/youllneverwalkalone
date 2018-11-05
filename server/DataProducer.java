@@ -32,7 +32,6 @@ public class DataProducer {
     public static File FileRecorder;
     public static BufferedWriter r_out;
     public static Boolean startRecording = false;
-    public static String server_addr = "172.20.0.1";
     public static Producer<String, String> producer;
 
     /*****/
@@ -40,23 +39,22 @@ public class DataProducer {
     static class HttpRequestHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange res) throws IOException {
-            //Create a response form the request query parameters
+            // Create a response form the request query parameters
             URI uri = res.getRequestURI();
             String[] response = createResponseFromQueryParams(uri);
-            System.out.println("Response: "+ response[0]);
+            System.out.println("Response: " + response[0]);
             startRecording = !startRecording;
             if (startRecording) {
-                //create directory
+                // create directory
                 boolean result = false;
                 File newDir = new File("record_file/" + response[0]);
-                if (!newDir.exists()){
-                    try{
+                if (!newDir.exists()) {
+                    try {
                         newDir.mkdir();
                         result = true;
-                    } 
-                    catch(SecurityException se){
+                    } catch (SecurityException se) {
                         System.out.println(se);
-                    }        
+                    }
                 }
                 String pathToFile = "./record_file/" + response[0] + "/" + response[1] + ".txt";
                 try {
@@ -70,6 +68,7 @@ public class DataProducer {
                 r_out = null;
             }
         }
+
         private String[] createResponseFromQueryParams(URI uri) {
             String user_name = "";
             String date_mark = "";
@@ -77,26 +76,27 @@ public class DataProducer {
             if (query != null) {
                 String[] queryParams = query.split("&");
                 if (queryParams.length > 0) {
-                    for (int i = 0 ; i < queryParams.length; i++) {
+                    for (int i = 0; i < queryParams.length; i++) {
                         String[] param = queryParams[i].split("=");
-                        if (i == 0){
+                        if (i == 0) {
                             user_name = param[1];
-                        }else{
+                        } else {
                             date_mark = param[1];
                         }
                     }
                 }
             }
-            String[] res = {user_name,date_mark};
+            String[] res = { user_name, date_mark };
             return res;
         }
     }
 
     public static void main(String[] args) throws Exception {
         // data recorder server
-        HttpServer recorderServer = HttpServer.create(new InetSocketAddress(recording_server_port), 0);
-        recorderServer.createContext("/", new HttpRequestHandler());
-        recorderServer.start();
+        // HttpServer recorderServer = HttpServer.create(new
+        // InetSocketAddress(recording_server_port), 0);
+        // recorderServer.createContext("/", new HttpRequestHandler());
+        // recorderServer.start();
         /*********************************************************************************************/
 
         // Calling Zookeeper server and Kafka server using processes
@@ -132,58 +132,53 @@ public class DataProducer {
 
         System.out.println("Sensors connecting...");
         producer = new KafkaProducer(props);
-        
+
         ServerSocket listen = new ServerSocket(8080);
         boolean connectSensor = true;
         int i = 0;
         Socket socket = listen.accept();
         while (connectSensor) {
-        //     socket = listen.accept();
-        //     System.out.println("listening..");
-        //     // reading post request from sensor
-        //     BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        //     // to concatenate strings gotten
-        //     StringBuilder sb = new StringBuilder();
-        //     // send some response to the sensors
-        //     // BufferedWriter out = new BufferedWriter(new
-        //     // OutputStreamWriter(socket.getOutputStream()));
-        //     String s;
-        //     // keep reading line by line the request
-        //     // store each to string builder
-        //     while ((s = in.readLine()) != null) {
-        //         System.out.println('>' + s);
-        //         sb.append(s);
-        //     }
-        //     // ok, connection close, then send the data from sensor to kafka
-        //     socket.close();
-        //     // position of each query to extract the parameters
-        //     int startIndex = sb.indexOf("?temp");
-        //     int tempIndex = sb.indexOf("&?humid");
-        //     int humidIndex = sb.indexOf("&?soilhumid");
-        //     int soil_humidIndex = sb.indexOf("&?light");
-        //     int stopIndex = sb.indexOf(" HTTP");
-
-        //     // our heroes, the status of smart farm, convert from string to float,
-        //     // prepare for sending
-        //     float temperature = Float.parseFloat(sb.substring(startIndex + 6, tempIndex));
-        //     float humidity = Float.parseFloat(sb.substring(tempIndex + 8, humidIndex));
-        //     float soil_humidity = Float.parseFloat(sb.substring(humidIndex + 12, soil_humidIndex));
-        //     float light = Float.parseFloat(sb.substring(soil_humidIndex + 8, stopIndex));
-
+            socket = listen.accept();
+            System.out.println("listening..");
+            // reading post request from sensor
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            // to concatenate strings gotten
+            StringBuilder sb = new StringBuilder();
+            // send some response to the sensors
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            String s;
+            // keep reading line by line the request
+            // store each to string builder
+            while ((s = in.readLine()) != null) {
+                System.out.println('>' + s);
+                sb.append(s);
+            }
+            // ok, connection close, then send the data from sensor to kafka
+            socket.close();
+            // position of each query to extract the parameters
+            int startIndex = sb.indexOf("?temp");
+            int tempIndex = sb.indexOf("&?humid");
+            int humidIndex = sb.indexOf("&?soilhumid");
+            int soil_humidIndex = sb.indexOf("&?light");
+            int stopIndex = sb.indexOf(" HTTP");
+            // our heroes, the status of smart farm, convert from string to float,
+            // prepare for sending
+            float temperature = Float.parseFloat(sb.substring(startIndex + 6, tempIndex));
+            float humidity = Float.parseFloat(sb.substring(tempIndex + 8, humidIndex));
+            float soil_humidity = Float.parseFloat(sb.substring(humidIndex + 12, soil_humidIndex));
+            float light = Float.parseFloat(sb.substring(soil_humidIndex + 8, stopIndex));
             // time to send data to kafka server
 
-            int[] obj = { i, i, i, i };
+            float[] obj = { temperature, humidity, soil_humidity, light };
             String result = Arrays.toString(obj);
             System.out.println(result);
-            producer.send(new ProducerRecord<String, String>(topicName, result));
-            // dis is for recording files yo!
-            if (r_out != null) {
-                r_out.write("result\n");
-            }
-            i += 1;
-            TimeUnit.SECONDS.sleep(2);
+            producer.send(new ProducerRecord<String, String>(topicName, result)); // dis
+            // is for recording files yo!
+            /*
+             * if (r_out != null) { r_out.write(); }
+             */
         }
-        //listen.close(); // destructor
+        listen.close(); // destructor
         // close producer and servers
         producer.close();
         System.out.println("Closing servers...");

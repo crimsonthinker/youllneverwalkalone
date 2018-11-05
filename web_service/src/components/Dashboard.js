@@ -5,7 +5,7 @@ const axios = require('axios');
 class Dashboard extends Component {
   constructor(props) {
     super(props);
-    this.server_addr = "192.168.43.85";
+    this.server_addr = "192.168.43.27";
     this.state = {
       n_temperature: "",
       n_humidity: "",
@@ -168,7 +168,6 @@ class Dashboard extends Component {
     console.log(this.state.isheat, this.state.ishumid, this.state.ishumidsoil, this.state.islight)
     return (
       <div>
-        <p>{this.state.isheat.toString()},{this.state.ishumid.toString()},{this.state.ishumidsoil.toString()},{this.state.islight.toString()}</p>
         <div className="container-fluid">
           {/* Breadcrumbs*/}
           <ol className="breadcrumb">
@@ -185,7 +184,7 @@ class Dashboard extends Component {
                   <div className="card-body-icon">
                     <i className="fas fa-fw fa-comments" />
                   </div>
-                  <div className="mr-5">Độ ẩm hiện tại: {this.state.n_humidity}
+                  <div className="mr-5">Độ ẩm hiện tại: {this.state.n_humidity} %
                   </div>
                 </div>
               </div>
@@ -196,7 +195,7 @@ class Dashboard extends Component {
                   <div className="card-body-icon">
                     <i className="fas fa-fw fa-list" />
                   </div>
-                  <div className="mr-5">Nhiệt độ hiện tại: 32 độ C</div>
+                  <div className="mr-5">Nhiệt độ hiện tại: {this.state.n_temperature} độ C</div>
                 </div>
               </div>
             </div>
@@ -220,7 +219,7 @@ class Dashboard extends Component {
                   <div className="card-body-icon">
                     <i className="fas fa-fw fa-comments" />
                   </div>
-                  <div className="mr-5">Ánh sáng hiện tại: {this.state.n_light}</div>
+                  <div className="mr-5">Ánh sáng hiện tại: {this.state.n_light} lux</div>
                 </div>
 
               </div>

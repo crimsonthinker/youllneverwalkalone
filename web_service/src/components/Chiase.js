@@ -19,7 +19,7 @@ class Chiase extends Component {
 
     componentWillMount() {
         this.state.peer.on('open', (id) => {
-            console.log('My peer ID is: ' + id);
+            console.log('My Smart Farm ID is: ' + id);
             this.setState({
                 my_id: id,
                 initialized: true
@@ -112,7 +112,7 @@ class Chiase extends Component {
             result = (
                 <div className="container">
                     <div>
-                        <span>{'Your PeerJS ID:'} </span>
+                        <span>{'Your Smart Farm ID:'} </span>
                         <strong className="mui--divider-left">{this.state.my_id}</strong>
                     </div>
                     {this.state.connected ? this.renderConnected() : this.renderNotConnected()}
@@ -130,7 +130,7 @@ class Chiase extends Component {
                 <hr />
                 <div className="mui-textfield">
                     <input type="text" className="mui-textfield" onChange={this.handleTextChange} />
-                    <label>{'Peer ID'}</label>
+                    <label>{'Your friend Smart Farm ID'}</label>
                 </div>
                 <button className="mui-btn mui-btn--accent" onClick={this.connect}>
                     {'connect'}
