@@ -5,7 +5,7 @@ const axios = require('axios');
 class Dashboard extends Component {
   constructor(props) {
     super(props);
-    this.server_addr = "192.168.43.242";
+    this.server_addr = "192.168.43.85";
     this.state = {
       n_temperature: "",
       n_humidity: "",
@@ -269,11 +269,30 @@ class Dashboard extends Component {
           </form>
 
           <div className="row">
-            <div className="col-3"><button type="button" className="btn btn-success btn-lg btn3d"><span className="glyphicon glyphicon-ok" /> Tưới cây</button></div>
-            <div className="col-3"><button type="button" className="btn btn-primary btn-lg btn3d"><span className="glyphicon glyphicon-ok" /> Chia sẻ TOPIC</button></div>
-            <div className="col-3"><button type="button" className="btn btn-info btn-lg btn3d"><span className="glyphicon glyphicon-ok" /> Chia sẻ biểu đồ</button>
+            <div className="col-3">
+              <button type="button" className="btn btn-success btn-lg btn3d">
+                <span className="glyphicon glyphicon-ok" />
+                Tưới cây
+              </button>
             </div>
-            <div className="col-3"><button type="button" className="btn btn-warning btn-lg btn3d"><span className="glyphicon glyphicon-ok" /> Chia sẻ người dùng</button></div>
+            <div className="col-3">
+              <button type="button" className="btn btn-primary btn-lg btn3d">
+                <span className="glyphicon glyphicon-ok" />
+                Chia sẻ TOPIC
+              </button>
+            </div>
+            <div className="col-3">
+              <button type="button" className="btn btn-info btn-lg btn3d">
+                <span className="glyphicon glyphicon-ok" />
+                Chia sẻ biểu đồ
+              </button>
+            </div>
+            <div className="col-3">
+              <button type="button" className="btn btn-warning btn-lg btn3d">
+                <span className="glyphicon glyphicon-ok" />
+                Chia sẻ người dùng
+              </button>
+            </div>
           </div>
 
 

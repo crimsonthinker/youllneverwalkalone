@@ -4,7 +4,7 @@ const axios = require('axios');
 class Lichsu extends Component {
   constructor(props) {
     super(props);
-    this.server_addr = "192.168.43.242";
+    this.server_addr = "192.168.43.85";
     this.state = {
       n_temperature: "",
       n_humidity: "",
@@ -99,6 +99,15 @@ class Lichsu extends Component {
 
     return <tbody>{rows}</tbody>;
   }
+
+  recordingOn(user,e){
+    var request = new XMLHttpRequest();
+    var port = 9094;
+    var today = new Date();
+    var ip_addr = "192.168.43.85";
+    request.open('GET', 'http:/' + ip_addr + ":" + port.toString() + "username=" + user + "&datemark=" + today, true);
+    request.send()
+  }
   render() {
     return (
       <div className="col-sm-12">
@@ -108,7 +117,7 @@ class Lichsu extends Component {
           </thead>
           {this.displayRowdata()}
         </table>
-        <div className="col-11"><button type="button" className="btn btn-success btn-lg btn3d float-right"><span className="glyphicon glyphicon-ok" /> Ghi dữ liệu</button></div>
+        <div className="col-11"><button type="button" className="btn btn-success btn-lg btn3d float-right" onClick={this.recordingOn.bind(this,'user?')}><span className="glyphicon glyphicon-ok" /> Ghi dữ liệu</button></div>
       </div>
     );
   }
