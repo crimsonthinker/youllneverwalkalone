@@ -21,65 +21,83 @@ const Chart = (props) => {
     const data_humid_map = DATA.map(el => ({ x: el.x, y: el.y1 }));
     const data_soil_humid_map = DATA.map(el => ({ x: el.x, y: el.y2 }));
     const data_light_map = DATA.map(el => ({ x: el.x, y: el.y3 }));
+
+    const TOPIC = ["block", "block", "block", "block"]
+    if (!props.data.is_temp) {
+        TOPIC[0] = "none"
+    } else if (!props.data.is_humid) {
+        TOPIC[1] = "none"
+    } else if (!props.data.is_soil_humid) {
+        TOPIC[2] = "none"
+    } else if (!props.data.is_light) {
+        TOPIC[3] = "none"
+    }
+
     return (
         <div>
-            <h4>Nhiệt độ môi trường trồng cây theo thời gian</h4>
-            <XYPlot
-                xDomain={[DATA[0].x - 2000 * 15, DATA[0].x]}
-                yDomain={[0, 40]}
-                xType="time"
-                width={1000}
-                height={300}>
-                <VerticalGridLines />
-                <HorizontalGridLines />
-                <XAxis title="Thời gian" />
-                <YAxis title="Độ C" />
-                <LineMarkSeries data={data_temp_map} lineStyle={{ stroke: 'blue' }} LineColor='white' markStyle={{ stroke: 'green' }} />
-            </XYPlot>
+            <div id='temp' style={{ display: TOPIC[0] }}>
+                <h4>Nhiệt độ môi trường trồng cây theo thời gian</h4>
+                <XYPlot
+                    xDomain={[DATA[0].x - 2000 * 15, DATA[0].x]}
+                    yDomain={[0, 40]}
+                    xType="time"
+                    width={1000}
+                    height={300}>
+                    <VerticalGridLines />
+                    <HorizontalGridLines />
+                    <XAxis title="Thời gian" />
+                    <YAxis title="Độ C" />
+                    <LineMarkSeries data={data_temp_map} lineStyle={{ stroke: 'blue' }} LineColor='white' markStyle={{ stroke: 'green' }} />
+                </XYPlot>
 
-            <h4>Độ ẩm không khi theo thời gian</h4>
-            <XYPlot
-                xDomain={[DATA[0].x - 2000 * 15, DATA[0].x]}
-                yDomain={[0, 100]}
-                xType="time"
-                width={1000}
-                height={300}>
-                <VerticalGridLines />
-                <HorizontalGridLines />
-                <XAxis title="Thời gian" />
-                <YAxis title="Phần trăm" />
-                <LineMarkSeries data={data_humid_map} lineStyle={{ stroke: 'violet' }} LineColor='white' markStyle={{ stroke: 'orange' }} />
-            </XYPlot>
+            </div>
+            <div id='humid' style={{ display: TOPIC[1] }}>
+                <h4>Độ ẩm không khi theo thời gian</h4>
+                <XYPlot
+                    xDomain={[DATA[0].x - 2000 * 15, DATA[0].x]}
+                    yDomain={[0, 100]}
+                    xType="time"
+                    width={1000}
+                    height={300}>
+                    <VerticalGridLines />
+                    <HorizontalGridLines />
+                    <XAxis title="Thời gian" />
+                    <YAxis title="Phần trăm" />
+                    <LineMarkSeries data={data_humid_map} lineStyle={{ stroke: 'violet' }} LineColor='white' markStyle={{ stroke: 'orange' }} />
+                </XYPlot>
+            </div>
+            <div id='soil_humid' style={{ display: TOPIC[2] }}>
+                <h4>Độ ẩm đất theo thời gian</h4>
+                <XYPlot
+                    xDomain={[DATA[0].x - 2000 * 15, DATA[0].x]}
+                    yDomain={[0, 1024]}
+                    xType="time"
+                    width={1000}
+                    height={300}>
+                    <VerticalGridLines />
+                    <HorizontalGridLines />
+                    <XAxis title="Thời gian" />
+                    <YAxis title="Phần trăm" />
+                    <LineMarkSeries data={data_soil_humid_map} lineStyle={{ stroke: 'yellow' }} LineColor='white' markStyle={{ stroke: 'red' }} />
+                </XYPlot>
+            </div>
+            <div id='light' style={{ display: TOPIC[3] }}>
+                <h4>Cường độ chiếu sáng cây trồng theo thời gian</h4>
+                <XYPlot
+                    xDomain={[DATA[0].x - 2000 * 15, DATA[0].x]}
+                    yDomain={[0, 50000]}
+                    xType="time"
+                    width={1000}
+                    height={300}>
+                    <VerticalGridLines />
+                    <HorizontalGridLines />
+                    <XAxis title="Thời gian" />
+                    <YAxis title="Lux" />
+                    <LineMarkSeries data={data_light_map} lineStyle={{ stroke: 'green' }} LineColor='white' markStyle={{ stroke: 'violet' }} />
+                </XYPlot>
+            </div>
+        </div >
 
-            <h4>Độ ẩm đất theo thời gian</h4>
-            <XYPlot
-                xDomain={[DATA[0].x - 2000 * 15, DATA[0].x]}
-                yDomain={[0, 1024]}
-                xType="time"
-                width={1000}
-                height={300}>
-                <VerticalGridLines />
-                <HorizontalGridLines />
-                <XAxis title="Thời gian" />
-                <YAxis title="Phần trăm" />
-                <LineMarkSeries data={data_soil_humid_map} lineStyle={{ stroke: 'yellow' }} LineColor='white' markStyle={{ stroke: 'red' }} />
-            </XYPlot>
-
-            <h4>Cường độ chiếu sáng cây trồng theo thời gian</h4>
-            <XYPlot
-                xDomain={[DATA[0].x - 2000 * 15, DATA[0].x]}
-                yDomain={[0, 50000]}
-                xType="time"
-                width={1000}
-                height={300}>
-                <VerticalGridLines />
-                <HorizontalGridLines />
-                <XAxis title="Thời gian" />
-                <YAxis title="Lux" />
-                <LineMarkSeries data={data_light_map} lineStyle={{ stroke: 'green' }} LineColor='white' markStyle={{ stroke: 'violet' }} />
-            </XYPlot>
-
-        </div>
 
     );
 }
