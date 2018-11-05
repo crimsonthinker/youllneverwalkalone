@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
+const axios = require('axios');
 class Lichsu extends Component {
   constructor(props) {
     super(props);
@@ -13,10 +14,26 @@ class Lichsu extends Component {
       list_humid: [],
       list_soil_humid: [],
       list_light: [],
-      list_date: []
+      list_date: [],
+      isheat:false,
+        ishumid:false,
+        islight:false,
+        ishumidsoil:false
     }
     this.socket = null;
     this.queue_max_size = 10;
+  }
+  componentDidMount(){
+    axios.get('/current_login?email=' + localStorage.getItem('email'))
+    .then((response) =>{
+    console.log('=',response.data)
+      this.setState({
+        ...response.data
+      });
+    })
+    .catch(function (error) {
+      alert(error)
+    });
   }
   componentWillMount() {
     this.socket = io(this.server_addr + ':9093');

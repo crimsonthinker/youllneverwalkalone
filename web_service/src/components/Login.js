@@ -14,7 +14,7 @@ class Login extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleChange(event) {
+  handleChange(event) {//thay doi state theo input nhap vao
     const target = event.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
@@ -32,8 +32,10 @@ class Login extends Component {
         email: this.state.email,
         password: this.state.password
       })
-      .then(function (response) {
+      .then((response)=> {
         console.log(response);
+        localStorage.setItem('email', this.state.email)
+        //localStorage.removeItem('email')
         this.props.history.replace('/');
       })
       .catch(function (error) {
