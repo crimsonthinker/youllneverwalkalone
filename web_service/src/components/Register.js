@@ -42,7 +42,7 @@ class Register extends Component {
         islight:this.state.islight,
         ishumidsoil:this.state.ishumidsoil
       })
-      .then(function (response) {
+      .then((response) =>{
         console.log(response);
         this.props.history.replace('/login');
       })

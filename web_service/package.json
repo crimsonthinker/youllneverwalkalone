@@ -2,6 +2,7 @@
   "name": "web_service",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:6969/",
   "dependencies": {
     "ajv": "^6.0.0",
     "axios": "^0.18.0",
@@ -11,7 +12,7 @@
     "fs-extra": "^7.0.0",
     "graceful-fs": "^4.1.11",
     "react": "^15.5.4",
-    "react-dom": "^16.5.2",
+    "react-dom": "^15.5.4",
     "react-interval-renderer": "^1.0.1",
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.0.5",
