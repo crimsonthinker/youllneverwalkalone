@@ -4,23 +4,20 @@ import Sidebar from './Sidebar';
 import DieuHuongURL from './DieuHuongURL';
 import Footer from './Footer';
 class MainScreen extends Component {
-    render() {
-        return (
-        
-                <div id="page-top">
-        <Nav/>
+  render() {
+    return (
+      <div id="page-top">
+        <Nav />
         <div id="wrapper">
-        <Sidebar/>
+          <Sidebar />
           <div id="content-wrapper">
-            <DieuHuongURL/>
+            <DieuHuongURL />
           </div>
         </div>
-        <Footer/>
+        <Footer />
       </div>
-    
-
-        );
-    }
+    );
+  }
 }
 
 export default MainScreen;
