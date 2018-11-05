@@ -1,28 +1,47 @@
 import React, { Component } from 'react';
 import Chart from './Visual';
 import io from 'socket.io-client';
-
+const axios = require('axios');
 class Dashboard extends Component {
   constructor(props) {
     super(props);
+    this.server_addr = "192.168.43.242";
     this.state = {
-      n_temperature: "",
-      n_humidity: "",
-      n_soil_humidity: "",
-      n_light: "",
-      list_tempe: [],
-      list_humid: [],
-      list_soil_humid: [],
-      list_light: [],
-      list_date: []
+        n_temperature: "",
+        n_humidity:"",
+        n_soil_humidity: "",
+        n_light: "",
+        list_tempe:[],
+        list_humid:[],
+        list_soil_humid:[],
+        list_light:[],
+        list_date:[],
+        email:'',
+        username:'',
+        isheat:false,
+        ishumid:true,
+        islight:false,
+        ishumidsoil:true
     }
+    this.handleSubmit = this.handleSubmit.bind(this);
     this.socket = null;
     this.queue_max_size = 10;
   }
+  componentDidMount(){
+    axios.get('/current_login?email=' + localStorage.getItem('email'))
+    .then((response) =>{
+    console.log('=',response.data)
+      this.setState({
+        ...response.data
+      });
+    })
+    .catch(function (error) {
+      alert(error)
+    });
+  }
 
   componentWillMount() {
-
-    this.socket = io('localhost:9093');
+    this.socket = io(this.server_addr + ':9093');
     this.socket.on('newMessage', (response) => {
 
       this.newMessage(response);
@@ -48,6 +67,35 @@ class Dashboard extends Component {
       n_light: tmp[3]
     });
   };
+  handleChange = (event) => {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+console.log('change', name,value)
+    this.setState({
+    [name]:value
+      });
+  }
+
+  handleSubmit = async (e) => {
+    e.preventDefault();
+
+      axios.post('/update', {
+        email: this.state.email,
+        isheat:this.state.isheat,
+        ishumid:this.state.ishumid,
+        islight:this.state.islight,
+        ishumidsoil:this.state.ishumidsoil
+      })
+      .then((response) =>{
+        console.log(response.data[0]);
+        this.props.history.replace('/');
+      })
+      .catch(function (error) {
+        alert(error)
+      });
+      
+    } 
   displayRowdata() {
     var list_date = this.state.list_date;
     var list_humid = this.state.list_humid;
@@ -55,8 +103,28 @@ class Dashboard extends Component {
     var list_soil_humid = this.state.list_soil_humid;
     var list_light = this.state.list_light;
     var rows = [];
-    var numrows = this.state.list_date.length;
-    if (numrows < 15) {
+    var numrows=this.state.list_date.length;
+    if(this.state.isheat==false){
+      for (var i=0;i<numrows;i++){
+        list_tempe[i]="Not allow";
+      }
+    }
+    if(this.state.ishumid==false){
+      for (var i=0;i<numrows;i++){
+        list_humid[i]="Not allow";
+      }
+    }
+    if(this.state.islight==false){
+      for (var i=0;i<numrows;i++){
+        list_light[i]="Not allow";
+      }
+    }
+    if(this.state.ishumidsoil==false){
+      for (var i=0;i<numrows;i++){
+        list_soil_humid[i]="Not allow";
+      }
+    }
+    if(numrows<15){
 
       for (var i = 0; i < numrows; i++) {
         // note: we add a key prop here to allow react to uniquely identify each
@@ -92,9 +160,11 @@ class Dashboard extends Component {
       soil_humid: this.state.list_soil_humid,
       light: this.state.list_light,
       date: this.state.list_date
-    };
+    }
+    console.log(this.state.isheat, this.state.ishumid, this.state.ishumidsoil, this.state.islight)
     return (
       <div>
+        <p>{this.state.isheat.toString()},{this.state.ishumid.toString()},{this.state.ishumidsoil.toString()},{this.state.islight.toString()}</p>
         <div className="container-fluid">
           {/* Breadcrumbs*/}
           <ol className="breadcrumb">
@@ -163,18 +233,36 @@ class Dashboard extends Component {
             </div>
 
           </div>
-          <div className="form-group">
-            <label for="gender1" className="col-sm-4 control-label">Chọn TOPIC cần đăng ký thêm:</label>
-            <div className="col-sm-4">
-              <select className="form-control selcls" id="gender1">
-                <option>Nhiệt độ</option>
-                <option>Độ ẩm </option>
-                <option>Ánh sáng </option>
-              </select>
-              <button type="button" className="btn btn-danger btn-lg btn3d"><span className="glyphicon glyphicon-ok" /> Đăng ký</button>
-            </div>
-
-          </div>
+          <form id="Login" onSubmit={this.handleSubmit}>
+                  
+                  <div className="form-group">
+                    <div className="col-md-7">
+                    <div className="panel">
+                  <p>Chọn TOPIC:</p>
+                </div>
+                      <fieldset>
+                        <div className="checkbox checkbox-danger checkbox-inline float-left">
+                          <input name="isheat" type="checkbox" checked={this.state.isheat} id="inlineCheckbox1" onChange={this.handleChange} />
+                          <label htmlFor="inlineCheckbox1"> Nhiệt độ </label>
+                        </div>
+                        <div className="checkbox checkbox-success checkbox-inline float-left">
+                          <input name="ishumid" type="checkbox" checked={this.state.ishumid} id="inlineCheckbox2" onChange={this.handleChange}/>
+                          <label htmlFor="inlineCheckbox2"> Độ ẩm </label>
+                        </div>
+                        <div className="checkbox checkbox-info checkbox-inline float-left">
+                          <input name="islight" type="checkbox" checked={this.state.islight} id="inlineCheckbox3" onChange={this.handleChange} />
+                          <label htmlFor="inlineCheckbox3"> Ánh sáng </label>
+                        </div>
+                        <div className="checkbox checkbox-warning checkbox-inline float-left">
+                          <input name="ishumidsoil" type="checkbox" checked={this.state.ishumidsoil} id="inlineCheckbox4" onChange={this.handleChange} />
+                          <label htmlFor="inlineCheckbox4"> Độ ẩm đất </label>
+                        </div>
+                      </fieldset>
+                    </div>
+                  </div>
+                  <input type="submit" value="Đăng ký" className="btn btn-danger btn-lg btn3d"/>
+    
+                </form>
 
           <div className="row">
             <div className="col-3">
