@@ -1,2 +1,0 @@
-http://localhost:6969/register?email=duong@gmail.com&password=123&username=duong&isheat=true&ishumid=false&islight=true&ishumidsoil=false
-http://localhost:6969/current_login
