@@ -18,7 +18,6 @@
     "fs-extra": "^7.0.0",
     "get-port": "^4.0.0",
     "graceful-fs": "^4.1.11",
-<<<<<<< HEAD
     "peer": "^0.2.10",
     "peerjs": "^0.3.18",
     "portfinder": "^1.0.19",
@@ -26,10 +25,6 @@
     "randomstring": "^1.1.5",
     "react": "^16.6.0",
     "react-dom": "^16.6.0",
-=======
-    "react": "^15.5.4",
-    "react-dom": "^15.5.4",
->>>>>>> master
     "react-interval-renderer": "^1.0.1",
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.0.5",

@@ -25,11 +25,14 @@ const Chart = (props) => {
     const TOPIC = ["block", "block", "block", "block"]
     if (!props.data.is_temp) {
         TOPIC[0] = "none"
-    } else if (!props.data.is_humid) {
+    }
+    if (!props.data.is_humid) {
         TOPIC[1] = "none"
-    } else if (!props.data.is_soil_humid) {
+    }
+    if (!props.data.is_soil_humid) {
         TOPIC[2] = "none"
-    } else if (!props.data.is_light) {
+    }
+    if (!props.data.is_light) {
         TOPIC[3] = "none"
     }
 
@@ -52,7 +55,7 @@ const Chart = (props) => {
 
             </div>
             <div id='humid' style={{ display: TOPIC[1] }}>
-                <h4>Độ ẩm không khi theo thời gian</h4>
+                <h4>Độ ẩm không khí theo thời gian</h4>
                 <XYPlot
                     xDomain={[DATA[0].x - 2000 * 15, DATA[0].x]}
                     yDomain={[0, 100]}
@@ -70,7 +73,7 @@ const Chart = (props) => {
                 <h4>Độ ẩm đất theo thời gian</h4>
                 <XYPlot
                     xDomain={[DATA[0].x - 2000 * 15, DATA[0].x]}
-                    yDomain={[0, 1024]}
+                    yDomain={[0, 1200]}
                     xType="time"
                     width={1000}
                     height={300}>

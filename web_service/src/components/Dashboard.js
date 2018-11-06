@@ -11,17 +11,19 @@ class Dashboard extends Component {
       n_humidity: "",
       n_soil_humidity: "",
       n_light: "",
+      n_status: "",
       list_tempe: [],
       list_humid: [],
       list_soil_humid: [],
       list_light: [],
+      list_status: [],
       list_date: [],
       email: '',
       username: '',
       isheat: false,
-      ishumid: true,
-      islight: false,
-      ishumidsoil: true
+      ishumid: false,
+      ishumidsoil: false,
+      islight: false
     }
     this.handleSubmit = this.handleSubmit.bind(this);
     this.socket = null;
@@ -52,6 +54,7 @@ class Dashboard extends Component {
           list_humid: previousState.list_humid.concat([this.state.n_humidity]),
           list_light: previousState.list_light.concat([this.state.n_light]),
           list_soil_humid: previousState.list_soil_humid.concat([this.state.n_soil_humidity]),
+          list_status: previousState.list_status.concat([this.state.n_status]),
           list_date: previousState.list_date.concat([Date(Date.now()).toString()])
         };
       });
@@ -59,12 +62,19 @@ class Dashboard extends Component {
   }
   newMessage(m) {
     var tmp = m.substr(1, m.length - 2).split(',');
+    var current;
+    if (parseFloat(tmp[0]) > 33.0 || parseFloat(tmp[1]) < 70.0 || parseInt(tmp[2]) > 200 || parseFloat(tmp[3] > 10000.0)) {
+      current = "Cây đang cần tưới.";
+    } else {
+      current = "Cây đã đủ nước."
+    }
     console.log(tmp.toString())
     this.setState({
       n_temperature: tmp[0],
       n_humidity: tmp[1],
       n_soil_humidity: tmp[2],
-      n_light: tmp[3]
+      n_light: tmp[3],
+      n_status: current
     });
   };
   handleChange = (event) => {
@@ -166,6 +176,23 @@ class Dashboard extends Component {
       is_light: this.state.islight
     }
     console.log(this.state.isheat, this.state.ishumid, this.state.ishumidsoil, this.state.islight)
+
+    const TOPIC = ["block", "block", "block", "block", "block"]
+    if (!this.state.isheat) {
+      TOPIC[0] = "none"
+    }
+    if (!this.state.ishumid) {
+      TOPIC[1] = "none"
+    }
+    if (!this.state.ishumidsoil) {
+      TOPIC[2] = "none"
+    }
+    if (!this.state.islight) {
+      TOPIC[3] = "none"
+    }
+    if (!this.state.isheat && !this.state.ishumid && !this.state.ishumidsoil && !this.state.islight) {
+      TOPIC[4] = "none"
+    }
     return (
       <div>
         <div className="container-fluid">
@@ -184,8 +211,7 @@ class Dashboard extends Component {
                   <div className="card-body-icon">
                     <i className="fas fa-fw fa-comments" />
                   </div>
-                  <div className="mr-5">Độ ẩm hiện tại: {this.state.n_humidity} %
-                  </div>
+                  <div className="mr-5">Độ ẩm hiện tại: <p style={{ display: TOPIC[1] }}>{this.state.n_humidity} % </p></div>
                 </div>
               </div>
             </div>
@@ -195,7 +221,7 @@ class Dashboard extends Component {
                   <div className="card-body-icon">
                     <i className="fas fa-fw fa-list" />
                   </div>
-                  <div className="mr-5">Nhiệt độ hiện tại: {this.state.n_temperature} độ C</div>
+                  <div className="mr-5">Nhiệt độ hiện tại: <p style={{ display: TOPIC[0] }}> {this.state.n_temperature} độ C</p></div>
                 </div>
               </div>
             </div>
@@ -206,7 +232,7 @@ class Dashboard extends Component {
                   <div className="card-body-icon">
                     <i className="fas fa-fw fa-list" />
                   </div>
-                  <div className="mr-5">Tình trạng cây trồng: Đang cần tưới</div>
+                  <div className="mr-5">Tình trạng cây trồng: <p style={{ display: TOPIC[4] }}> {this.state.n_status}</p></div>
                 </div>
               </div>
             </div>
@@ -219,7 +245,7 @@ class Dashboard extends Component {
                   <div className="card-body-icon">
                     <i className="fas fa-fw fa-comments" />
                   </div>
-                  <div className="mr-5">Ánh sáng hiện tại: {this.state.n_light} lux</div>
+                  <div className="mr-5">Ánh sáng hiện tại: <p style={{ display: TOPIC[3] }}>{this.state.n_light} lux</p></div>
                 </div>
 
               </div>
@@ -230,7 +256,7 @@ class Dashboard extends Component {
                   <div className="card-body-icon">
                     <i className="fas fa-fw fa-list" />
                   </div>
-                  <div className="mr-5">Độ ẩm đất hiện tại: {this.state.n_soil_humidity}</div>
+                  <div className="mr-5">Độ ẩm đất hiện tại: <p style={{ display: TOPIC[2] }}>{this.state.n_soil_humidity}</p></div>
                 </div>
               </div>
             </div>
@@ -333,7 +359,7 @@ class Dashboard extends Component {
                             <th className="sorting_asc" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-sort="ascending" aria-label="Name: activate to sort column descending" style={{ width: 69 }}>Thời gian</th>
                             <th className="sorting_asc" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-sort="ascending" aria-label="Name: activate to sort column descending" style={{ width: 69 }}>Nhiệt độ</th>
                             <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Position: activate to sort column ascending" style={{ width: 107 }}>Độ ẩm không khí (%)</th>
-                            <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Office: activate to sort column ascending" style={{ width: 56 }}>Độ ẩm đất (%)</th>
+                            <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Office: activate to sort column ascending" style={{ width: 56 }}>Độ ẩm đất</th>
                             <th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Age: activate to sort column ascending" style={{ width: 31 }}>Ánh sáng (lux)</th>
                           </tr>
                         </thead>

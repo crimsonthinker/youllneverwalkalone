@@ -93,10 +93,9 @@ public class DataProducer {
 
     public static void main(String[] args) throws Exception {
         // data recorder server
-        // HttpServer recorderServer = HttpServer.create(new
-        // InetSocketAddress(recording_server_port), 0);
-        // recorderServer.createContext("/", new HttpRequestHandler());
-        // recorderServer.start();
+        HttpServer recorderServer = HttpServer.create(new InetSocketAddress(recording_server_port), 0);
+        recorderServer.createContext("/", new HttpRequestHandler());
+        recorderServer.start();
         /*********************************************************************************************/
 
         // Calling Zookeeper server and Kafka server using processes
