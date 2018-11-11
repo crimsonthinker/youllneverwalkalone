@@ -15,10 +15,14 @@ class Lichsu extends Component {
       list_soil_humid: [],
       list_light: [],
       list_date: [],
+      email: '',
+      username: '',
       isheat: false,
       ishumid: false,
       islight: false,
-      ishumidsoil: false
+      ishumidsoil: false,
+      controlButton:true,
+      date:''
     }
     this.socket = null;
     this.queue_max_size = 10;
@@ -119,15 +123,63 @@ class Lichsu extends Component {
 
     return <tbody>{rows}</tbody>;
   }
+recordingOff(){
+  var request = new XMLHttpRequest();
+    var port = 9094;
+    request.open('GET', 'http:/' + this.server_addr + ":" + port.toString() + "username=" + this.state.username + "&datemark=" + this.state.date, true);
+    request.send()
+}
 
-  recordingOn(user, e) {
+recordingSave(){
+  this.setState({
+    controlButton:true
+  });
+  const FileDownload = require('js-file-download');
+  var request = new XMLHttpRequest();
+  var port = 9094;
+  request.open('GET', 'http:/' + this.server_addr + ":" + port.toString() + "username=" + this.state.username + "&datemark=" + this.state.date, true);
+  request.send()
+  axios.get(`http://` + this.server_addr + `/record_file/` + this.state.username + `/` + this.state.date + `.txt`)
+   .then((response) => {
+        FileDownload(response.data, 'report.txt');
+   });
+  
+}
+  recordingOn(user) {
+    this.setState({
+      controlButton:false,
+      date: String(new Date())
+    });
     var request = new XMLHttpRequest();
     var port = 9094;
-    var today = new Date();
-    var ip_addr = "192.168.43.85";
-    request.open('GET', 'http:/' + ip_addr + ":" + port.toString() + "username=" + user + "&datemark=" + today, true);
+    request.open('GET', 'http:/' + this.server_addr + ":" + port.toString() + "username=" + this.state.username + "&datemark=" + this.state.date, true);
     request.send()
   }
+  displayButton(){
+    if (this.state.controlButton==true){
+      return (        
+      <div className="col-11">
+      <button type="button" className="btn btn-success btn-lg btn3d float-right" onClick={this.recordingOn.bind(this, 'user?')}><span className="glyphicon glyphicon-ok" /> Ghi dữ liệu</button>
+      </div>
+      )
+    }
+    else 
+    {
+      return (
+    <div>
+      <div className="col-9">
+        <button type="button" className="btn btn-danger btn-lg btn3d float-right" onClick={()=>this.recordingOff()}><span className="glyphicon glyphicon-ok" /> Stop</button>
+      </div>
+      <div className="col-3">
+        <button type="button" className="btn btn-info btn-lg btn3d float-right" onClick={()=>this.recordingSave()}><span className="glyphicon glyphicon-ok" /> Save</button>
+      </div>
+    </div>
+
+      )
+    }
+  }
+
+  display
   render() {
     return (
       <div className="col-sm-12">
@@ -137,7 +189,8 @@ class Lichsu extends Component {
           </thead>
           {this.displayRowdata()}
         </table>
-        <div className="col-11"><button type="button" className="btn btn-success btn-lg btn3d float-right" onClick={this.recordingOn.bind(this, 'user?')}><span className="glyphicon glyphicon-ok" /> Ghi dữ liệu</button></div>
+          {this.displayButton()}
+
       </div>
     );
   }

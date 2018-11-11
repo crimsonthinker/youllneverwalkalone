@@ -223,6 +223,7 @@ app.get("/current_login",(req,res)=>{
             //Map for get some of the result information
             const returnValue = rows.map((row)=>{
                 return {email: row.email,
+                        username:row.username,
                         isheat: row.isheat,
                         ishumid: row.ishumid,
                         islight: row.islight,
