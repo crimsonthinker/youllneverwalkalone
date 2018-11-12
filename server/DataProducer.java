@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.concurrent.TimeUnit;
 
 public class DataProducer {
     static Runtime rt = Runtime.getRuntime();
@@ -42,21 +43,21 @@ public class DataProducer {
             // Create a response form the request query parameters
             URI uri = res.getRequestURI();
             String[] response = createResponseFromQueryParams(uri);
-            System.out.println("Response: " + response[0]);
+            System.out.println("Response: " + response[0] + "," + response[1]);
             startRecording = !startRecording;
             if (startRecording) {
                 // create directory
-                boolean result = false;
-                File newDir = new File("record_file/" + response[0]);
-                if (!newDir.exists()) {
-                    try {
-                        newDir.mkdir();
-                        result = true;
-                    } catch (SecurityException se) {
-                        System.out.println(se);
-                    }
+                String pathToFile = "/record_file/" + response[0] + "/" + response[1] + ".txt";
+                File f = null;
+                try {
+                    f = new File("/record_file/" + response[0]);
+                    boolean bool = f.mkdir();
+                    System.out.print("Directory created? " + bool);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                String pathToFile = "./record_file/" + response[0] + "/" + response[1] + ".txt";
+                System.out.println(pathToFile);
                 try {
                     r_out = new BufferedWriter(new FileWriter(pathToFile));
                     r_out.write("temperature,humidity,soil humidity,light\n");
@@ -135,47 +136,51 @@ public class DataProducer {
         ServerSocket listen = new ServerSocket(8080);
         boolean connectSensor = true;
         int i = 0;
-        Socket socket = listen.accept();
+        // Socket socket = listen.accept();
         while (connectSensor) {
-            socket = listen.accept();
-            System.out.println("listening..");
-            // reading post request from sensor
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            // to concatenate strings gotten
-            StringBuilder sb = new StringBuilder();
-            // send some response to the sensors
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            String s;
-            // keep reading line by line the request
-            // store each to string builder
-            while ((s = in.readLine()) != null) {
-                System.out.println('>' + s);
-                sb.append(s);
-            }
-            // ok, connection close, then send the data from sensor to kafka
-            socket.close();
-            // position of each query to extract the parameters
-            int startIndex = sb.indexOf("?temp");
-            int tempIndex = sb.indexOf("&?humid");
-            int humidIndex = sb.indexOf("&?soilhumid");
-            int soil_humidIndex = sb.indexOf("&?light");
-            int stopIndex = sb.indexOf(" HTTP");
-            // our heroes, the status of smart farm, convert from string to float,
-            // prepare for sending
-            float temperature = Float.parseFloat(sb.substring(startIndex + 6, tempIndex));
-            float humidity = Float.parseFloat(sb.substring(tempIndex + 8, humidIndex));
-            float soil_humidity = Float.parseFloat(sb.substring(humidIndex + 12, soil_humidIndex));
-            float light = Float.parseFloat(sb.substring(soil_humidIndex + 8, stopIndex));
+            // socket = listen.accept();
+            // System.out.println("listening..");
+            // // reading post request from sensor
+            // BufferedReader in = new BufferedReader(new
+            // InputStreamReader(socket.getInputStream()));
+            // // to concatenate strings gotten
+            // StringBuilder sb = new StringBuilder();
+            // // send some response to the sensors
+            // BufferedWriter out = new BufferedWriter(new
+            // OutputStreamWriter(socket.getOutputStream()));
+            // String s;
+            // // keep reading line by line the request
+            // // store each to string builder
+            // while ((s = in.readLine()) != null) {
+            // System.out.println('>' + s);
+            // sb.append(s);
+            // }
+            // // ok, connection close, then send the data from sensor to kafka
+            // socket.close();
+            // // position of each query to extract the parameters
+            // int startIndex = sb.indexOf("?temp");
+            // int tempIndex = sb.indexOf("&?humid");
+            // int humidIndex = sb.indexOf("&?soilhumid");
+            // int soil_humidIndex = sb.indexOf("&?light");
+            // int stopIndex = sb.indexOf(" HTTP");
+            // // our heroes, the status of smart farm, convert from string to float,
+            // // prepare for sending
+            // float temperature = Float.parseFloat(sb.substring(startIndex + 6,
+            // tempIndex));
+            // float humidity = Float.parseFloat(sb.substring(tempIndex + 8, humidIndex));
+            // float soil_humidity = Float.parseFloat(sb.substring(humidIndex + 12,
+            // soil_humidIndex));
+            // float light = Float.parseFloat(sb.substring(soil_humidIndex + 8, stopIndex));
             // time to send data to kafka server
 
-            float[] obj = { temperature, humidity, soil_humidity, light };
+            float[] obj = { i, i, i, i };
+            i += 1;
             String result = Arrays.toString(obj);
-            System.out.println(result);
             producer.send(new ProducerRecord<String, String>(topicName, result)); // dis
-            // is for recording files yo!
-            /*
-             * if (r_out != null) { r_out.write(); }
-             */
+            TimeUnit.MILLISECONDS.sleep(200);
+            if (r_out != null) {
+                r_out.write(result + "\n");
+            }
         }
         listen.close(); // destructor
         // close producer and servers

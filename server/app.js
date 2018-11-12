@@ -227,6 +227,7 @@ app.get("/current_login", (req, res) => {
             const returnValue = rows.map((row) => {
                 return {
                     email: row.email,
+                    username: row.username,
                     isheat: row.isheat,
                     ishumid: row.ishumid,
                     islight: row.islight,

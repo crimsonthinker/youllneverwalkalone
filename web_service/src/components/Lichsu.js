@@ -15,10 +15,14 @@ class Lichsu extends Component {
       list_soil_humid: [],
       list_light: [],
       list_date: [],
+      email: "",
+      username: "",
       isheat: false,
       ishumid: false,
       islight: false,
-      ishumidsoil: false
+      ishumidsoil: false,
+      controlButton: true,
+      date: ""
     }
     this.socket = null;
     this.queue_max_size = 10;
@@ -119,28 +123,78 @@ class Lichsu extends Component {
 
     return <tbody>{rows}</tbody>;
   }
-
-  recordingOn(user, e) {
+  recordingOff() {
     var request = new XMLHttpRequest();
     var port = 9094;
-    var today = new Date();
-    var ip_addr = "192.168.43.85";
-    request.open('GET', 'http:/' + ip_addr + ":" + port.toString() + "username=" + user + "&datemark=" + today, true);
+    request.open('GET', 'http://' + this.server_addr + ":9094" + "?username=" + this.state.username + "&?datemark=" + this.state.date, true);
     request.send()
+  }
+
+  recordingSave() {
+    this.setState({
+      controlButton: true
+    });
+    var request = new XMLHttpRequest();
+    var ion = 'http://' + this.server_addr + ":9094" + "?username=" + this.state.username + "&?datemark=" + this.state.date;
+    console.log(ion);
+    request.open('POST', ion, true);
+    request.send()
+    const FileDownload = require('js-file-download');
+    axios.get('http://' + this.server_addr + ':9094' + + "?username=" + this.state.username + "&?datemark=" + this.state.date + '.txt')
+      .then((response) => {
+        console.log(response)
+        FileDownload(response.data, 'report.txt');
+      });
+
+  }
+
+  recordingOn() {
+
+    var request = new XMLHttpRequest();
+    var port = 9094;
+    var dato = String(new Date());
+    request.open('GET', 'http://' + this.server_addr + ":" + port.toString() + "?username=" + this.state.username + "&datemark=" + dato, true);
+    request.send()
+    this.setState({
+      controlButton: false,
+      date: dato
+    });
+  }
+  displayButton() {
+    if (this.state.controlButton == true) {
+      return (
+        <div className="col-11">
+          <button type="button" className="btn btn-success btn-lg btn3d float-r/ight" onClick={() => this.recordingOn()}><span className="glyphicon glyphicon-ok" /> Ghi dữ liệu</button>
+        </div>
+      )
+    }
+    else {
+      return (
+        <div>
+          <div className="col-9">
+            <button type="button" className="btn btn-danger btn-lg btn3d float-right" onClick={() => this.recordingOff()}><span className="glyphicon glyphicon-ok" /> Stop</button>
+          </div>
+          <div className="col-3">
+            <button type="button" className="btn btn-info btn-lg btn3d float-right" onClick={() => this.recordingSave()}><span className="glyphicon glyphicon-ok" /> Save</button>
+          </div>
+        </div>
+
+      )
+    }
   }
   render() {
     return (
       <div className="col-sm-12">
+        {this.displayButton()}
         <table className="table table-bordered dataTable" id="dataTable" width="100%" cellSpacing={0} role="grid" aria-describedby="dataTable_info" style={{ width: '100%' }}>
           <thead>
             <tr role="row"><th className="sorting_asc" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-sort="ascending" aria-label="Name: activate to sort column descending" style={{ width: 69 }}>Thời gian</th><th className="sorting_asc" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-sort="ascending" aria-label="Name: activate to sort column descending" style={{ width: 69 }}>Nhiệt độ (độ C)</th><th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Position: activate to sort column ascending" style={{ width: 107 }}>Độ ẩm không khí (%)</th><th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Office: activate to sort column ascending" style={{ width: 56 }}>Độ ẩm đất</th><th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Age: activate to sort column ascending" style={{ width: 31 }}>Ánh sáng (lux)</th></tr>
           </thead>
           {this.displayRowdata()}
         </table>
-        <div className="col-11"><button type="button" className="btn btn-success btn-lg btn3d float-right" onClick={this.recordingOn.bind(this, 'user?')}><span className="glyphicon glyphicon-ok" /> Ghi dữ liệu</button></div>
+
       </div>
     );
   }
 }
-
 export default Lichsu;
