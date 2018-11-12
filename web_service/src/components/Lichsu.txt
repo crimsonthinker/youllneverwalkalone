@@ -15,14 +15,14 @@ class Lichsu extends Component {
       list_soil_humid: [],
       list_light: [],
       list_date: [],
-      email: "",
-      username: "",
+      email: '',
+      username: '',
       isheat: false,
       ishumid: false,
       islight: false,
       ishumidsoil: false,
-      controlButton: true,
-      date: ""
+      controlButton:true,
+      date:''
     }
     this.socket = null;
     this.queue_max_size = 10;
@@ -123,85 +123,77 @@ class Lichsu extends Component {
 
     return <tbody>{rows}</tbody>;
   }
-  recordingOff() {
-    var request = new XMLHttpRequest();
+recordingOff(){
+  var request = new XMLHttpRequest();
     var port = 9094;
-    request.open('GET', 'http://' + this.server_addr + ":9094" + "?username=" + this.state.username + "&?datemark=" + this.state.date, true);
+    request.open('GET', 'http:/' + this.server_addr + ":" + port.toString() + "username=" + this.state.username + "&datemark=" + this.state.date, true);
     request.send()
-  }
+}
 
-  recordingSave() {
+recordingSave(){
+  this.setState({
+    controlButton:true
+  });
+  const FileDownload = require('js-file-download');
+  var request = new XMLHttpRequest();
+  var port = 9094;
+  request.open('GET', 'http:/' + this.server_addr + ":" + port.toString() + "username=" + this.state.username + "&datemark=" + this.state.date, true);
+  request.send()
+  axios.get(`http://` + this.server_addr + `/record_file/` + this.state.username + `/` + this.state.date + `.txt`)
+   .then((response) => {
+        FileDownload(response.data, 'report.txt');
+   });
+  
+}
+  recordingOn(user) {
     this.setState({
-      controlButton: true
+      controlButton:false,
+      date: String(new Date())
     });
     var request = new XMLHttpRequest();
-    var ion = 'http://' + this.server_addr + ":9094" + "?username=" + this.state.username + "&?datemark=" + this.state.date;
-    console.log(ion);
-    request.open('POST', ion, true);
-    request.send()
-    const FileDownload = require('js-file-download');
-    axios({
-      url: this.server_addr + "/record_file/" + this.state.username + "/" + this.state.date + ".txt", //your url
-      method: 'GET',
-      responseType: 'blob', // important
-    }).then((response) => {
-       const url = window.URL.createObjectURL(new Blob([response.data]));
-       const link = document.createElement('a');
-       link.href = url;
-       link.setAttribute('download', 'Report.txt'); //or any other extension
-       document.body.appendChild(link);
-       link.click();
-    })
-
-  }
-
-  recordingOn() {
-
-    var request = new XMLHttpRequest();
     var port = 9094;
-    var dato = String(new Date());
-    request.open('GET', 'http://' + this.server_addr + ":" + port.toString() + "?username=" + this.state.username + "&datemark=" + dato, true);
+    request.open('GET', 'http:/' + this.server_addr + ":" + port.toString() + "username=" + this.state.username + "&datemark=" + this.state.date, true);
     request.send()
-    this.setState({
-      controlButton: false,
-      date: dato
-    });
   }
-  displayButton() {
-    if (this.state.controlButton == true) {
-      return (
-        <div className="col-11">
-          <button type="button" className="btn btn-success btn-lg btn3d float-r/ight" onClick={() => this.recordingOn()}><span className="glyphicon glyphicon-ok" /> Ghi dữ liệu</button>
-        </div>
+  displayButton(){
+    if (this.state.controlButton==true){
+      return (        
+      <div className="col-11">
+      <button type="button" className="btn btn-success btn-lg btn3d float-right" onClick={this.recordingOn.bind(this, 'user?')}><span className="glyphicon glyphicon-ok" /> Ghi dữ liệu</button>
+      </div>
       )
     }
-    else {
+    else 
+    {
       return (
-        <div>
-          <div className="col-9">
-            <button type="button" className="btn btn-danger btn-lg btn3d float-right" onClick={() => this.recordingOff()}><span className="glyphicon glyphicon-ok" /> Stop</button>
-          </div>
-          <div className="col-3">
-            <button type="button" className="btn btn-info btn-lg btn3d float-right" onClick={() => this.recordingSave()}><span className="glyphicon glyphicon-ok" /> Save</button>
-          </div>
-        </div>
+    <div>
+      <div className="col-9">
+        <button type="button" className="btn btn-danger btn-lg btn3d float-right" onClick={()=>this.recordingOff()}><span className="glyphicon glyphicon-ok" /> Stop</button>
+      </div>
+      <div className="col-3">
+        <button type="button" className="btn btn-info btn-lg btn3d float-right" onClick={()=>this.recordingSave()}><span className="glyphicon glyphicon-ok" /> Save</button>
+      </div>
+    </div>
 
       )
     }
   }
+
+  display
   render() {
     return (
       <div className="col-sm-12">
-        {this.displayButton()}
         <table className="table table-bordered dataTable" id="dataTable" width="100%" cellSpacing={0} role="grid" aria-describedby="dataTable_info" style={{ width: '100%' }}>
           <thead>
             <tr role="row"><th className="sorting_asc" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-sort="ascending" aria-label="Name: activate to sort column descending" style={{ width: 69 }}>Thời gian</th><th className="sorting_asc" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-sort="ascending" aria-label="Name: activate to sort column descending" style={{ width: 69 }}>Nhiệt độ (độ C)</th><th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Position: activate to sort column ascending" style={{ width: 107 }}>Độ ẩm không khí (%)</th><th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Office: activate to sort column ascending" style={{ width: 56 }}>Độ ẩm đất</th><th className="sorting" tabIndex={0} aria-controls="dataTable" rowSpan={1} colSpan={1} aria-label="Age: activate to sort column ascending" style={{ width: 31 }}>Ánh sáng (lux)</th></tr>
           </thead>
           {this.displayRowdata()}
         </table>
+          {this.displayButton()}
 
       </div>
     );
   }
 }
+
 export default Lichsu;

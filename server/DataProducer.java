@@ -47,10 +47,10 @@ public class DataProducer {
             startRecording = !startRecording;
             if (startRecording) {
                 // create directory
-                String pathToFile = "/record_file/" + response[0] + "/" + response[1] + ".txt";
+                String pathToFile = "/var/www/html/record_file/" + response[0] + "/" + response[1] + ".txt";
                 File f = null;
                 try {
-                    f = new File("/record_file/" + response[0]);
+                    f = new File("/var/www/html/record_file/" + response[0]);
                     boolean bool = f.mkdir();
                     System.out.print("Directory created? " + bool);
 
